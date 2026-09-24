@@ -1,0 +1,2 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),{postgresSQL}=require('../store.cjs');
+test('PostgreSQL uses bind parameters and native JSON extraction',()=>{assert.equal(postgresSQL('SELECT * FROM assets WHERE id=? AND user_id=?'),'SELECT * FROM assets WHERE id=$1 AND user_id=$2');assert.equal(postgresSQL("SELECT code FROM rooms WHERE json_extract(state,'$.phase')='auction'"),"SELECT code FROM rooms WHERE (state::jsonb->>'phase')='auction'")});

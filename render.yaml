@@ -1,0 +1,10 @@
+# Render Free + external Supabase Free database. No paid disk is attached.
+services:
+  - type: web
+    name: kaoru-monopoly
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false

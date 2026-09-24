@@ -34,3 +34,21 @@ input:not([type=file]){background:#fcfaff;border-color:#ddd4e7;color:#30223f}lab
 .tile.special.has-image>span{position:absolute;bottom:5px;left:2px;right:2px;color:white;font-weight:700;text-shadow:0 1px 4px #000;z-index:1}
 .tile.special.has-image>b{position:absolute;top:3px;left:3px;border-radius:5px;background:#ffffffdf;color:#614975;padding:1px 4px;font-size:14px;line-height:1.1;margin:0}
 #special-info{margin-bottom:18px}
+
+/* v0.5.1 — solo geometría del tablero.
+   Mantiene la estética original y hace que todas las casillas del borde
+   tengan el mismo tamaño visual. */
+#board{
+  grid-template-columns:repeat(11,minmax(0,1fr));
+  grid-template-rows:repeat(11,minmax(0,1fr));
+  min-width:820px;
+}
+.tile{aspect-ratio:1}
+.center{
+  grid-area:2/2/11/11;
+  width:78%;
+  height:78%;
+  justify-self:center;
+  align-self:center;
+}
+@media(max-width:760px){#board{min-width:820px}}

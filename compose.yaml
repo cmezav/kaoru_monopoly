@@ -1,0 +1,12 @@
+services:
+  kaoru:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - kaoru-data:/app/data
+    environment:
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:3000}
+    restart: unless-stopped
+volumes:
+  kaoru-data:
