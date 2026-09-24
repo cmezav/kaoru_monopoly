@@ -1,0 +1,10 @@
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const source=fs.readFileSync(require('node:path').join(__dirname,'../app.js'),'utf8');
+const context={};vm.createContext(context);
+vm.runInContext(source.slice(source.indexOf('function draw('),source.indexOf('function renderBoard('))+source.slice(source.indexOf('function validate('),source.indexOf("$('save').onclick")),context);
+test('24 unique perimeter positions leave the central 5x5 free',()=>{const positions=Array.from({length:24},(_,i)=>context.coords(i));assert.equal(new Set(positions.map(p=>p.join(','))).size,24);for(const [r,c]of positions){assert(r>=1&&r<=7&&c>=1&&c<=7);assert(r===1||r===7||c===1||c===7)}});
+test('valid document survives JSON roundtrip; invalid image URLs and economics are rejected',()=>{const street={name:'Circo',series:'Serie',color:'#aabbcc',price:100,rent:10,image:null,zoom:2,x:.8,y:.5};const b={version:1,title:'Mi tablero',streets:Array.from({length:20},()=>({...street}))};context.validate(JSON.parse(JSON.stringify(b)));for(const patch of [{image:'https://example.com/x.png'},{price:-1},{zoom:0},{x:2},{color:'red'},{rent:1.2}]){const bad=structuredClone(b);Object.assign(bad.streets[0],patch);assert.throws(()=>context.validate(bad))}});
+test('portrait and landscape crops cover the frame without distortion, with equivalent thumbnail composition',()=>{for(const [width,height]of [[900,400],[300,900]])for(const zoom of [1,2,4])for(const x of [0,.5,1]){const calls=[];context.imageFor=()=>({width,height});const canvas=(w,h)=>({width:w,height:h,getContext:()=>({clearRect(){},drawImage(...args){calls.push(args)}})});const street={image:'test',zoom,x,y:.75};context.draw(canvas(600,450),street);context.draw(canvas(160,120),street);const [,dx,dy,w,h]=calls[0];assert(dx<=0&&dy<=0);assert(dx+w>=600-1e-8&&dy+h>=450-1e-8);assert(Math.abs(w/h-width/height)<1e-8);for(let i=1;i<5;i++)assert(Math.abs(calls[0][i]/600-calls[1][i]/160)<1e-8)}});
