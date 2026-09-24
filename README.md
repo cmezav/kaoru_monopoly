@@ -1,33 +1,37 @@
-# Kaoru Monopoly
+# Kaoru Monopoly v0.4 — 40 casillas, tema claro
 
-Un juego de propiedades inspirado en nuestras series favoritas.
+Abre `index.html`. Tu tablero adjunto ya viene incluido con sus 20 calles y 19 imágenes, más dos calles nuevas. No necesitas importarlo para empezar en un navegador sin borradores.
 
-## Primera entrega: editor de calles
+Si se recupera otro borrador local, pulsa **Tu tablero incluido** para cargar la copia que enviaste. Guarda después de editar.
 
-Abre `index.html` o sirve esta carpeta con `python -m http.server 8000` y visita `http://localhost:8000`.
-No requiere instalación de paquetes. Los archivos estáticos también se pueden alojar en GitHub Pages (Settings → Pages → Deploy from a branch → main → /root).
+## Distribución
 
-- Tablero de muestra con 20 calles editables y cuatro casillas especiales.
-- Nombre del tablero, nombres de calles, serie, color, precio y alquiler base.
-- Subida PNG/JPG/WebP (8 MB máximo), normalizada a un máximo de 1400 píxeles de lado.
-- Recorte 4:3 con zoom, arrastre táctil/ratón, flechas de teclado y controles horizontal/vertical.
-- El mismo encuadre se representa en la vista previa y la casilla; no se deforma la imagen.
-- Guardado explícito en IndexedDB del navegador. No sincroniza entre dispositivos.
-- Exportación/importación JSON con imágenes y parámetros de encuadre incluidos. Exporta como copia de seguridad: borrar datos del navegador elimina el borrador local.
+11 espacios por lado, con esquinas compartidas: 40 en total. 22 calles en 8 grupos (2,3,3,3,3,3,3,2), 4 estaciones, 2 servicios, 3 Suerte, 3 Comunidad, 2 impuestos y 4 esquinas clásicas. Salida abajo a la derecha; estaciones en el centro de cada lado. Por tanto, son dos calles nuevas, no doce.
 
-## Estado y siguientes etapas
+Tema claro completo, imágenes a casilla completa y editor con recorte cuadrado. El tablero mantiene un ancho mínimo de 640 px: en pantallas pequeñas puede desplazarse horizontalmente para no hacer ilegibles las cartas. El panel editor pasa debajo.
 
-Esta entrega es un editor, no una partida jugable. Las casillas y precios son ejemplos, no un balance final. No se han implementado cuentas, fichas personales, marcos, salas ni sonidos todavía.
+Lee la guía desde **Guía de casillas** (`reglas.html`). Es una adaptación de estructura clásica, no una reproducción exacta de los precios o nombres de Monopoly Perú. Los precios de tus calles se conservan; las nuevas usan valores de ejemplo.
 
-1. Motor de reglas y servidor autoritativo: dados, turnos, compra, alquiler y victoria. Probar dos clientes en una misma sala.
-2. Cuentas y almacenamiento remoto de perfiles, fichas PNG, marcos y tableros.
-3. Salas privadas de 2–4 personas, reconexión y persistencia de partidas.
-4. Animaciones, sonidos, subastas e intercambios.
+## Migración
 
-El editor se mantiene independiente del motor: `version`, `title` y `streets` definen el documento. Cada calle conserva `image`, `zoom`, `x`, `y` (posición normalizada), y sus datos económicos. El servidor deberá validar esos datos, congelar una copia al empezar la partida y controlar las transacciones. GitHub Pages sirve el editor, pero no sustituye al servidor de juego.
+Acepta JSON v1, v2, v3 y v4. v1/v2 se amplían automáticamente a 22 calles conservando nombres, imágenes, encuadres y economía existente. Se reasignan grupos y se unifica el color dentro de cada grupo para cumplir la distribución nueva. El borrador se guarda en `draft-v4`; los borradores anteriores permanecen intactos.
 
-## Verificación
+El archivo `kaoru-tablero-40.json` es tu copia ya convertida. `default-board.js` contiene esa misma copia para funcionar incluso al abrir index.html directamente. Si cambias de navegador o URL, importa el JSON.
 
-Prueba de navegador: subir una imagen, ajustar zoom y posición, verificar recorte, guardar y recargar, exportar/importar, rechazar un JSON inválido y comprobar pantalla móvil sin desbordamientos horizontales.
+Sube TODOS los archivos del proyecto a GitHub, incluyendo `board-model.js` y `default-board.js`. La integración rechazó anteriormente las escrituras, así que esta entrega no se ha publicado automáticamente.
 
-Pruebas automatizadas: `node --test tests/editor.test.cjs` (3 pruebas: perímetro, validación y geometría del recorte). La sintaxis también se comprobó con `node --check app.js`. La verificación visual y el recorrido de guardado en un navegador real quedan pendientes: Chromium no estuvo disponible en el entorno de desarrollo.
+## Estado
+
+Editor de configuración, sin partidas todavía. La próxima etapa es implementar el motor clásico, cuentas y servidor multijugador. Las descripciones de casillas no son acciones ejecutables.
+
+## Pruebas
+
+`node --test tests/editor.test.cjs`
+
+Pruebas de topología, conteos, migración del archivo suministrado, preservación de imágenes y configuración, validación y recorte. La revisión visual y de interacción en navegador real sigue pendiente en este entorno.
+
+## Imágenes en casillas especiales
+
+Todas las casillas salvo las cuatro esquinas admiten imágenes: 22 calles y 14 casillas especiales (estaciones, servicios, impuestos, Suerte y Comunidad). Pulsa cualquiera, sube una imagen y ajusta zoom/posición. La imagen cubre la casilla; su rótulo e icono permiten reconocer su función. Cada casilla tiene imagen independiente.
+
+Los campos económicos solo aparecen al editar calles. El botón «Ver función de esta casilla» mantiene accesibles las reglas. Quitar imagen restaura el diseño original. Guardar y exportar incluyen las imágenes especiales. Antes de actualizar, exporta tus cambios actuales; no uses «Tu tablero incluido» si deseas conservar cambios posteriores al archivo que compartiste.
