@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS sessions(token TEXT PRIMARY KEY,user_id TEXT,expires 
 CREATE TABLE IF NOT EXISTS rooms(code TEXT PRIMARY KEY,host TEXT,board TEXT,members TEXT,settings TEXT,state TEXT,revision INTEGER);
 CREATE TABLE IF NOT EXISTS actions(room TEXT,user_id TEXT,action_id TEXT,PRIMARY KEY(room,user_id,action_id));
 CREATE TABLE IF NOT EXISTS assets(id TEXT PRIMARY KEY,user_id TEXT,kind TEXT,name TEXT,data TEXT,adjust TEXT,version INTEGER);
+CREATE TABLE IF NOT EXISTS board_configs(user_id TEXT PRIMARY KEY,board TEXT,updated BIGINT);
 CREATE INDEX IF NOT EXISTS assets_user ON assets(user_id);`;
 function postgresSQL(sql){let index=0;return sql.replace(/\?/g,()=>'$'+(++index)).replaceAll("json_extract(state,'$.phase')","(state::jsonb->>'phase')")}
 async function openStore(){

@@ -9,7 +9,8 @@ test('four authenticated clients: realtime, privacy, validation, idempotency and
  assert.equal((await call('/api/login',{username:'friend0',password:'wrong-password'})).status,401);
  assert.equal((await call('/api/me')).status,401);
  assert.equal((await call('/api/rooms',{},users[0].cookie,{Origin:'https://evil.invalid'})).status,403);
- const made=await call('/api/rooms',{rounds:15,pot:true},users[0].cookie);assert.equal(made.status,201);const code=made.data.code;
+ const editorBoard=(await call('/api/editor/board',undefined,users[0].cookie)).data.board;editorBoard.title='Persistido desde editor';editorBoard.cards.community[0].text='Evento guardado en cuenta';assert.equal((await call('/api/editor/board',{board:editorBoard},users[0].cookie)).status,200);assert.equal((await call('/api/editor/board',undefined,users[0].cookie)).data.board.cards.community[0].text,'Evento guardado en cuenta');
+ const made=await call('/api/rooms',{rounds:15,pot:true},users[0].cookie);assert.equal(made.status,201);const code=made.data.code;const roomBoard=await call(`/api/rooms/${code}/board`,undefined,users[0].cookie);assert.equal(roomBoard.data.title,'Persistido desde editor');assert.equal(roomBoard.data.cards.community[0].text,'Evento guardado en cuenta');
  for(let i=1;i<4;i++)assert.equal((await call(`/api/rooms/${code}/join`,{},users[i].cookie)).status,200);
  assert.equal((await call(`/api/rooms/${code}/join`,{},users[4].cookie)).status,400);
  assert.equal((await call(`/api/rooms/${code}/board`,undefined,users[4].cookie)).status,403);
@@ -43,7 +44,7 @@ test('four authenticated clients: realtime, privacy, validation, idempotency and
  assert.equal((await call('/api/profile',{name:'No guardar',avatar:png,frame:'broken'},users[0].cookie)).status,400);
  assert.deepEqual((await call('/api/me',undefined,users[0].cookie)).data.user,beforeBad);
  const revision=update.revision;cancel.abort();await reader.cancel().catch(()=>{});await stop();await start();const restored=await call(`/api/rooms/${code}`,undefined,users[0].cookie);assert.equal(restored.status,200);assert.equal(restored.data.revision,revision);assert.deepEqual(restored.data.state,update.state);assert.equal(restored.data.members[0].name,'Cielo');
- const restoredWardrobe=await call('/api/wardrobe',undefined,users[0].cookie);assert.equal(restoredWardrobe.data.items.find(i=>i.id===skinId).name,'Jax actualizado');
+ const restoredWardrobe=await call('/api/wardrobe',undefined,users[0].cookie);assert.equal(restoredWardrobe.data.items.find(i=>i.id===skinId).name,'Jax actualizado');const restoredEditor=await call('/api/editor/board',undefined,users[0].cookie);assert.equal(restoredEditor.data.saved,true);assert.equal(restoredEditor.data.board.title,'Persistido desde editor');
  const deleted=await call('/api/wardrobe/delete',{id:skinId},users[0].cookie);assert.equal(deleted.status,200);assert.equal(deleted.data.items.length,3);assert.equal(deleted.data.user.assets.token,null);assert.equal(deleted.data.user.assetIds.token,undefined);
 
  assert.equal((await fetch(base+'/')).status,200);assert.equal((await fetch(base+'/online.js')).status,200);assert.equal((await fetch(base+'/editor/')).status,200);

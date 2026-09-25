@@ -111,3 +111,8 @@ npm test
 Pasan **14 pruebas**: motor de juego, integración HTTP/SSE con cuatro clientes y SQLite temporal, solicitudes simultáneas, reinicio, permisos, guardar/equipar/sobrescribir/borrar skins, rechazo de una modificación ajena y traducción de parámetros SQL a PostgreSQL.
 
 **Todavía no se probaron una conexión real a Supabase, el despliegue en Render ni la interfaz con un navegador real.** Al publicar, comprueba con dos dispositivos: registro sin correo, guardar y equipar una ficha, entrar por código, jugar, reiniciar el servicio y volver a ver el mismo armario. Las pruebas locales no sustituyen esa comprobación del servicio externo.
+
+
+## Editor sincronizado
+
+Al pulsar Guardar en el Editor, el tablero y las cartillas se guardan en la cuenta. Las salas nuevas creadas con **Tablero guardado del Editor** usan automáticamente esa versión, incluyendo imágenes y encuadres. Las salas ya iniciadas conservan la copia con la que empezaron para evitar cambios a mitad de partida.

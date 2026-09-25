@@ -1,6 +1,6 @@
 # Reglas de Kaoru Online
 
-Cada jugadora comienza con 1000. GO está abajo a la izquierda; las fichas suben por el lado izquierdo y recorren el tablero en sentido horario. Pasar o llegar a GO hacia delante entrega 150. Retroceder o ir directamente a prisión no da salario.
+Cada jugadora comienza con 1300. GO está abajo a la izquierda; las fichas suben por el lado izquierdo y recorren el tablero en sentido horario. Pasar o llegar a GO hacia delante entrega 150. Retroceder o ir directamente a prisión no da salario.
 
 ## Casillas
 
