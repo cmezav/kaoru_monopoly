@@ -6,7 +6,7 @@ Si se recupera otro borrador local, pulsa **Tu tablero incluido** para cargar la
 
 ## Distribución
 
-11 espacios por lado, con esquinas compartidas: 40 en total. 22 calles en 8 grupos (2,3,3,3,3,3,3,2), 4 estaciones, 2 servicios, 3 Suerte, 3 Comunidad, 2 impuestos y 4 esquinas clásicas. Salida abajo a la izquierda; recorrido horario; estaciones en el centro de cada lado. Por tanto, son dos calles nuevas, no doce.
+11 espacios por lado, con esquinas compartidas: 40 en total. 22 calles en 8 grupos (2,3,3,3,3,3,3,2), 4 estaciones, 2 servicios, 3 Suerte, 3 Evento, 2 impuestos y 4 esquinas clásicas. Salida abajo a la izquierda; recorrido horario; estaciones en el centro de cada lado. Por tanto, son dos calles nuevas, no doce.
 
 Tema claro completo, imágenes a casilla completa y editor con recorte cuadrado. El tablero mantiene un ancho mínimo de 640 px: en pantallas pequeñas puede desplazarse horizontalmente para no hacer ilegibles las cartas. El panel editor pasa debajo.
 
@@ -32,6 +32,6 @@ Pruebas de topología, conteos, migración del archivo suministrado, preservaci�
 
 ## Imágenes en casillas especiales
 
-Las 40 casillas admiten imágenes: 22 calles y 18 casillas especiales, incluidas las cuatro esquinas (estaciones, servicios, impuestos, Suerte y Comunidad). Pulsa cualquiera, sube una imagen y ajusta zoom/posición. La imagen cubre la casilla; su rótulo e icono permiten reconocer su función. Cada casilla tiene imagen independiente.
+Las 40 casillas admiten imágenes: 22 calles y 18 casillas especiales, incluidas las cuatro esquinas (estaciones, servicios, impuestos, Suerte y Evento). Pulsa cualquiera, sube una imagen y ajusta zoom/posición. La imagen cubre la casilla; su rótulo e icono permiten reconocer su función. Cada casilla tiene imagen independiente.
 
 Los campos económicos solo aparecen al editar calles. El botón «Ver función de esta casilla» mantiene accesibles las reglas. Quitar imagen restaura el diseño original. Guardar y exportar incluyen las imágenes especiales. Antes de actualizar, exporta tus cambios actuales; no uses «Tu tablero incluido» si deseas conservar cambios posteriores al archivo que compartiste.

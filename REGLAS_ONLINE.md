@@ -5,7 +5,7 @@ Cada jugadora comienza con 1000. GO está abajo a la izquierda; las fichas suben
 ## Casillas
 
 - GO: posición 0. Prisión/visita: 10. Parada libre: 20. Ve a la cárcel: 30. Caer en Prisión tirando los dados es solo visita.
-- Suerte: 7, 22, 36. Comunidad: 2, 17, 33. Cada casilla roba de su mazo, barajado por el servidor y no visible para los clientes. Los mazos se vuelven a barajar al agotarse.
+- Suerte: 7, 22, 36. Evento: 2, 17, 33. Cada casilla roba de su mazo, barajado por el servidor y no visible para los clientes. Los mazos se vuelven a barajar al agotarse.
 - Estaciones: 5, 15, 25, 35. Cuestan 200. Alquiler 50, 100, 200 o 400 según la cantidad del propietario; una estación hipotecada no cobra, pero cuenta en el conjunto.
 - Servicios: 12 y 28. Cuestan 150. Se usa el único dado de la tirada: alquiler igual al dado multiplicado por 16 si se posee uno, o por 40 si se poseen ambos. Un servicio hipotecado no cobra.
 - Impuestos: 4 cobra 300 y 38 cobra 200. Van al banco, o al bote si se activó.

@@ -7,17 +7,17 @@ const groupIds=groupSizes.flatMap((n,i)=>Array(n).fill(i));
 const classicPrices=[60,60,100,100,120,140,140,160,180,180,200,220,220,240,260,260,280,300,300,320,350,400];
 const specials={};
 function special(position,type,name,symbol,description){specials[position]={type,name,symbol,description}}
-special(0,'go','GO · SALIDA','↑','Cobras 200 al llegar o pasar por Salida hacia delante, salvo movimientos que indiquen lo contrario.');
-special(10,'jail','CÁRCEL / VISITA','▥','Caer aquí con los dados es solo visita. Estar encarcelada es un estado distinto: se sale pagando 50, con carta o sacando dobles; tras el tercer intento fallido se paga y se avanza.');
+special(0,'go','GO · SALIDA','↑','Cobras 150 al llegar o pasar por Salida hacia delante, salvo movimientos que indiquen lo contrario.');
+special(10,'jail','CÁRCEL / VISITA','▥','Caer aquí con el dado es solo visita. Si estás encarcelada, puedes pagar 150, usar una carta o intentar sacar 6; tras el tercer intento fallido se paga y se avanza.');
 special(20,'parking','PARADA LIBRE','☀','Descanso: no cobra ni entrega dinero en las reglas clásicas. Los impuestos no forman un premio en esta esquina.');
 special(30,'goToJail','VE A LA CÁRCEL','↪','Te trasladas directamente a Cárcel, sin cobrar Salida, y termina tu turno.');
-for(const [p,n]of [[5,'ESTACIÓN 1'],[15,'ESTACIÓN 2'],[25,'ESTACIÓN 3'],[35,'ESTACIÓN 4']])special(p,'transport',n,'▰','Transporte comprable. El alquiler clásico es 25 / 50 / 100 / 200 según poseas 1 / 2 / 3 / 4 estaciones. No admite casas ni hoteles.');
+for(const [p,n]of [[5,'ESTACIÓN 1'],[15,'ESTACIÓN 2'],[25,'ESTACIÓN 3'],[35,'ESTACIÓN 4']])special(p,'transport',n,'▰','Transporte comprable. El alquiler de esta versión es 50 / 100 / 200 / 400 según poseas 1 / 2 / 3 / 4 estaciones. No admite casas ni hoteles.');
 for(const p of [7,22,36])special(p,'chance','SUERTE','?','Roba del mazo de Suerte y resuelve su efecto: dinero, movimiento, cárcel u otro evento. Puede beneficiar o perjudicar.');
-for(const p of [2,17,33])special(p,'community','COMUNIDAD','✉','Roba del mazo de Comunidad y aplica el efecto. Es un mazo independiente de Suerte; no todas sus cartas son premios.');
-special(4,'tax','IMPUESTO','−','Pago al banco. Valor de referencia para esta adaptación: 200; no confirmado como importe de todas las ediciones Perú.');
-special(38,'tax','IMPUESTO DE LUJO','−','Pago al banco. Valor de referencia para esta adaptación: 100; no confirmado como importe de todas las ediciones Perú.');
-special(12,'utility','ELECTRICIDAD','ϟ','Servicio comprable. Alquiler clásico: resultado de los dados ×4 si el dueño tiene un servicio, ×10 si posee ambos. Sin edificios. Algunas cartas modifican el cálculo.');
-special(28,'utility','AGUA','≈','Servicio comprable del mismo conjunto que Electricidad. Alquiler vinculado a los dados; no se construyen casas u hoteles.');
+for(const p of [2,17,33])special(p,'community','EVENTO','✉','Roba una carta de Evento y aplica su efecto. Es un mazo independiente de Suerte y puede ayudarte o castigarte.');
+special(4,'tax','IMPUESTO','−','Pago fuerte al banco: 300 en esta versión.');
+special(38,'tax','IMPUESTO DE LUJO','−','Pago al banco: 200 en esta versión.');
+special(12,'utility','ELECTRICIDAD','ϟ','Servicio comprable. Alquiler: dado ×16 si el dueño tiene un servicio y ×40 si posee Agua y Electricidad. Sin edificios.');
+special(28,'utility','AGUA','≈','Servicio comprable del mismo conjunto que Electricidad. Alquiler: dado ×16 con un servicio y ×40 con ambos. Sin edificios.');
 const imagePositions=Object.keys(specials).map(Number).sort((a,b)=>a-b);
 function emptyArtwork(){return Object.fromEntries(imagePositions.map(p=>[p,{image:null,zoom:1,x:.5,y:.5}]))}
 
