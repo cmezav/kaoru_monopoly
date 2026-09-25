@@ -30,3 +30,32 @@ main{max-width:1900px;padding:22px 2%}
 .rent-list p{margin:5px 0;font-weight:600}
 @media(max-width:1100px){.game-workspace{grid-template-columns:1fr}.game-workspace aside{grid-template-columns:1fr 1fr}.piece{width:6.4%;height:6.4%}}
 @media(max-width:760px){#board{min-width:760px}.tile .stripe{height:10px}.tile .title{font-size:9px;bottom:14px}.tile .cost{font-size:8px}.piece{width:6.5%;height:6.5%}.center .dice{font-size:62px}}
+
+
+/* v0.9 — salto de fichas, dado Kaoru y tablero contenido en la pantalla */
+#game{min-height:calc(100vh - 115px)}
+#game .game-top{margin-bottom:6px}
+#game .players{margin:8px 0 10px}
+#game .player{min-height:72px;padding:8px 10px}
+#game .avatar{width:48px;height:48px}
+#game .player .cash{font-size:17px}
+#game .game-workspace{grid-template-columns:minmax(0,1fr) 300px;gap:14px;align-items:start}
+#game .board-panel{padding:10px;display:flex;flex-direction:column;min-width:0}
+#game .board-scroll{display:grid;place-items:center;overflow:auto;max-width:100%;padding:2px}
+#game #board{width:min(100%,calc(100vh - 315px));min-width:650px;max-width:850px;margin:0 auto}
+#game .footnote{display:none}
+#game .game-workspace>aside{max-height:calc(100vh - 285px);overflow:auto;padding:18px}
+.dice{width:clamp(108px,11vw,155px);height:clamp(112px,11.5vw,162px);display:grid;place-items:center;margin:2px auto 4px;line-height:1;filter:drop-shadow(0 9px 10px #52366a35)}
+.dice img{display:block;width:100%;height:100%;object-fit:contain;max-width:none;user-select:none;-webkit-user-drag:none}
+.dice.rolling{animation:dice-float .28s ease-in-out infinite alternate}
+.dice.rolling img{animation:dice-spin .22s linear infinite;filter:drop-shadow(0 0 8px #fff) drop-shadow(0 0 14px #e958c8)}
+.piece.hopping{animation:token-hop .18s cubic-bezier(.2,.8,.3,1)}
+.tile.token-step{z-index:5;animation:tile-step-pulse .22s ease-out;outline:4px solid var(--step-color,#db58c4);outline-offset:-4px}
+@keyframes token-hop{0%{transform:translate(-50%,-50%) translateY(0) scale(1)}42%{transform:translate(-50%,-50%) translateY(-24px) scale(1.16)}100%{transform:translate(-50%,-50%) translateY(0) scale(1)}}
+@keyframes tile-step-pulse{0%{box-shadow:inset 0 0 0 5px #fff,0 0 0 0 var(--step-color,#db58c4)}70%{box-shadow:inset 0 0 0 4px #fff,0 0 20px 7px var(--step-color,#db58c4)}100%{box-shadow:inset 0 0 0 2px #fff,0 0 4px 1px var(--step-color,#db58c4)}}
+@keyframes dice-float{from{transform:translateY(-3px) scale(1)}to{transform:translateY(3px) scale(1.06)}}
+@keyframes dice-spin{0%{transform:rotate(-7deg)}50%{transform:rotate(8deg) scale(1.08)}100%{transform:rotate(-7deg)}}
+@media(min-width:1250px) and (min-height:800px){#game #board{min-width:680px}.tile .title{font-size:clamp(9px,.72vw,12px)}.tile .cost{font-size:clamp(8px,.65vw,10px)}}
+@media(max-height:850px) and (min-width:900px){#game .players{margin:5px 0 7px}#game .player{min-height:64px;padding:6px 8px}#game .avatar{width:42px;height:42px}#game #board{width:min(100%,calc(100vh - 270px));min-width:610px}#game .game-workspace>aside{max-height:calc(100vh - 245px)}.dice{width:105px;height:110px}.center h2{font-size:24px;margin:5px 0}.center #event{min-height:34px;font-size:15px}.center .actions button{padding:9px 14px;font-size:13px}}
+@media(max-width:1100px){#game .game-workspace{grid-template-columns:1fr}#game #board{width:min(100%,calc(100vh - 285px));min-width:650px}#game .game-workspace>aside{max-height:none;overflow:visible}}
+@media(max-width:760px){#game #board{width:auto;min-width:760px}.dice{width:100px;height:105px}.piece.hopping{animation-duration:.16s}}
