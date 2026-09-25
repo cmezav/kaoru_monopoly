@@ -2,3 +2,31 @@
 @keyframes dice-roll{50%{transform:rotate(8deg) scale(1.1)}}@keyframes card-reveal{from{opacity:0;transform:translateY(15px) scale(.95)}to{opacity:1;transform:none}}@keyframes cash-rise{to{transform:translateY(-30px);opacity:0}}@media(max-width:1100px){.game-workspace{grid-template-columns:1fr}.game-workspace aside{display:grid;grid-template-columns:1fr 1fr;gap:20px}.players{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.lobby-grid{grid-template-columns:1fr}header{padding:14px;gap:12px;flex-wrap:wrap}.game-workspace aside{display:block}.player{padding:10px;gap:8px}.avatar{width:44px;height:44px}.player .cash{font-size:16px}.player small{font-size:11px}.game-top{align-items:flex-start;flex-direction:column}main{padding:16px}.panel{padding:20px}.board-panel{padding:10px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 .center .orb{font-size:40px}.center h2{margin:8px 0;font-size:30px}.center p{margin:5px 0}.check input[type=checkbox]{width:auto;display:inline-block;margin:0}dialog{max-width:650px}
 .wardrobe-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-height:330px;overflow-y:auto;margin:18px 0}.wardrobe-item{display:flex;flex-direction:column;gap:6px;border:1px solid #e0d7ec;padding:10px;border-radius:12px;min-width:0}.wardrobe-item strong{overflow-wrap:anywhere}.wardrobe-item small{color:#786985}.wardrobe-item button{font-size:11px;padding:7px}.wardrobe-thumb{width:100%;aspect-ratio:1;background:repeating-conic-gradient(#e9e3f0 0% 25%,#fbf9fe 0% 50%) 50%/16px 16px;border-radius:8px;overflow:hidden}.wardrobe-thumb img{width:100%;height:100%;object-fit:contain}.wardrobe-preview{height:170px;display:grid;place-items:center;background:#f1ebf8;border-radius:14px;margin:16px 0;overflow:hidden}.wardrobe-preview .avatar{width:100px;height:100px}.wardrobe-preview .token-preview{width:90px;height:90px}#wardrobeNew{margin:10px 0 20px}#wardrobeDialog{max-width:720px}@media(max-width:500px){.wardrobe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* v0.8 — tablero más legible y fichas fáciles de ubicar */
+main{max-width:1900px;padding:22px 2%}
+.game-workspace{grid-template-columns:minmax(0,1fr) 285px;gap:16px}
+.board-panel{padding:12px}
+#board{min-width:780px;gap:3px;padding:4px}
+.tile{aspect-ratio:1}
+.tile .stripe{height:13px}
+.tile .title{font-size:clamp(9px,.82vw,13px);bottom:17px;line-height:1.05}
+.tile .cost{font-size:clamp(8px,.72vw,11px);bottom:3px}
+.tile.special span{font-size:clamp(8px,.68vw,10px)}
+.players{margin:10px 0 14px;gap:9px}
+.player{min-height:84px;padding:10px 12px}
+.player .cash{font-size:18px}
+.avatar{width:54px;height:54px}
+.piece{width:6.2%;height:6.2%;z-index:12;filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px #ff4fd8) drop-shadow(0 0 12px #9b5de5);transition:left .14s linear,top .14s linear,transform .14s linear}
+.piece .default-token{border-width:4px;box-shadow:0 0 5px #fff,0 0 12px #ff4fd8,0 0 18px #9b5de5}
+.tile.occupied{outline:3px solid var(--occupant-color,#c05cff);outline-offset:-3px;box-shadow:inset 0 0 0 3px #ffffffb8,inset 0 0 18px var(--occupant-color,#c05cff),0 0 12px #d84cff88;z-index:3}
+.tile.occupied-multi{box-shadow:inset 0 0 0 3px #fff,inset 0 0 20px #ff4fd8,0 0 16px #9b5de5}
+.tile.special .owner-badge{top:3px;right:3px;bottom:auto;width:19px;height:19px;padding:0;border-radius:50%;display:grid;place-items:center;font-size:8px;line-height:1;border-width:2px;text-shadow:none;box-shadow:0 1px 5px #0005}
+.tile.special.has-image .owner-badge{top:3px;right:3px}
+.center .dice{font-size:74px;letter-spacing:0}
+.center #event{min-height:48px}
+.center .actions{max-width:470px}
+.center .actions button{font-size:15px;padding:12px 20px}
+.rent-list p{margin:5px 0;font-weight:600}
+@media(max-width:1100px){.game-workspace{grid-template-columns:1fr}.game-workspace aside{grid-template-columns:1fr 1fr}.piece{width:6.4%;height:6.4%}}
+@media(max-width:760px){#board{min-width:760px}.tile .stripe{height:10px}.tile .title{font-size:9px;bottom:14px}.tile .cost{font-size:8px}.piece{width:6.5%;height:6.5%}.center .dice{font-size:62px}}
