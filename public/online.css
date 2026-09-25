@@ -152,3 +152,17 @@ body.game-active main{position:relative;z-index:1;max-width:var(--game-max);min-
 #game #event.show{opacity:1;transform:translateY(0)}
 #game #event.fade-out{opacity:0;transform:translateY(-2px)}
 #game .center-history #history li::marker{content:''}
+
+
+/* v1.3 — subir ligeramente el tablero y aprovechar el espacio superior */
+body.game-active main{padding-top:2px}
+#game .game-top{min-height:18px;margin:0 0 0;position:relative;z-index:3}
+#game #turnLabel{position:absolute;right:4px;top:4px}
+#game .game-workspace{margin-top:-10px}
+#game .board-scroll{align-items:start}
+@media(max-height:820px) and (min-width:900px){
+  body.game-active main{padding-top:0}
+  #game .game-top{min-height:14px}
+  #game .game-workspace{margin-top:-12px}
+  #game #turnLabel{top:2px}
+}
