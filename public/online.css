@@ -513,3 +513,11 @@ body.game-active main{padding-top:2px}
   #game .landing-name{font-size:25px}
   #game .landing-buy-actions button{min-width:128px!important}
 }
+
+/* v16.5.1: compra simplificada y sin destello central */
+#game .center>.orb{display:none!important}
+#game .landing-offer{justify-content:center!important;gap:0!important;padding:12px 18px 6px!important}
+#game .landing-offer .landing-name{font-size:clamp(28px,3vw,40px)!important;text-align:center!important}
+#game .landing-offer .landing-price,#game .landing-offer .landing-spark{display:none!important}
+#game .landing-buy-actions{justify-content:center!important;gap:14px!important}
+#game .landing-buy-actions button{min-width:170px!important;padding:14px 22px!important;font-size:18px!important}
