@@ -438,3 +438,78 @@ body.game-active main{padding-top:2px}
   font-weight:700;
   color:#5b4169;
 }
+
+/* v16.5 — tirada de cárcel estable, número centrado y compra más bonita */
+#game .darwin-roll-number{
+  left:41.5%!important;
+  top:15.2%!important;
+  transform:translate(-50%,-50%) rotate(-7deg)!important;
+}
+#game .center .actions:has(.landing-offer){
+  width:min(92%,560px);
+  max-width:560px!important;
+  justify-content:center!important;
+  align-items:center;
+}
+#game .landing-offer{
+  flex:0 0 100%;
+  width:min(100%,470px);
+  margin:2px auto 4px;
+  padding:13px 20px 14px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:11px;
+  border:1px solid #eadcf4;
+  border-radius:20px;
+  background:linear-gradient(135deg,#fffffff2,#fff8ffeb);
+  box-shadow:0 10px 28px #54366f1a, inset 0 1px 0 #fff;
+  backdrop-filter:blur(6px);
+  color:#3c2948;
+}
+#game .landing-spark{
+  font-size:20px;
+  color:#b46bd0;
+  filter:drop-shadow(0 0 7px #df95ed70);
+}
+#game .landing-name{
+  min-width:0;
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(25px,2.2vw,34px);
+  font-weight:400;
+  line-height:1;
+  text-align:left;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+#game .landing-price{
+  padding:7px 13px 8px;
+  border-radius:999px;
+  background:#8b58c7;
+  color:#fff;
+  font-family:'Bryndan Write',cursive;
+  font-size:clamp(17px,1.5vw,21px);
+  font-weight:800;
+  line-height:1;
+  box-shadow:0 6px 14px #7245a52c;
+}
+#game .landing-buy-actions{
+  flex:0 0 100%;
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+#game .landing-buy-actions button{
+  min-width:160px!important;
+  margin:0!important;
+}
+@media(max-width:760px){
+  #game .landing-offer{grid-template-columns:auto 1fr;padding:11px 14px;gap:8px}
+  #game .landing-price{grid-column:2;justify-self:start}
+  #game .landing-name{font-size:25px}
+  #game .landing-buy-actions button{min-width:128px!important}
+}
