@@ -117,6 +117,12 @@ Pasan **14 pruebas**: motor de juego, integración HTTP/SSE con cuatro clientes 
 
 Al pulsar Guardar en el Editor, el tablero y las cartillas se guardan en la cuenta. Las salas nuevas creadas con **Tablero guardado del Editor** usan automáticamente esa versión, incluyendo imágenes y encuadres. Las salas ya iniciadas conservan la copia con la que empezaron para evitar cambios a mitad de partida.
 
+## Ajustes v1.7.11
+
+- El pago de **alquileres** ya no usa el sonido **cha-ching**. Ahora usa el efecto **sfx-rent.mp3** (cachetada).
+- Al pagar un alquiler aparece el **gatito del billete** como overlay visual, optimizado como **WebP** en `public/effects/rent-cat.webp` para cargar rápido igual que los otros gatitos.
+- El resto de cobros y pagos sigue usando sus sonidos anteriores.
+
 ## Ajustes v1.6.2
 
 - Mensajes de dinero con motivo explícito (por ejemplo, alquiler de una propiedad, compra, impuesto, hipoteca o salida de prisión).
