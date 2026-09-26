@@ -27,9 +27,8 @@
     <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
     <div id="chatPicker" class="chat-picker" hidden>
       <section id="chatEmojiPanel" class="chat-picker-panel">
-        <div class="chat-picker-label">Recientes</div>
-        <div id="chatRecentEmojis" class="emoji-grid"></div>
-        <div class="chat-picker-label">Emojis</div>
+        <div id="chatEmojiTabs" class="emoji-tabs" aria-label="Categorías de emojis"></div>
+        <div id="chatEmojiCategoryTitle" class="chat-picker-label">Recientes</div>
         <div id="chatAllEmojis" class="emoji-grid emoji-all"></div>
       </section>
       <section id="chatStickerPanel" class="chat-picker-panel" hidden>
@@ -38,10 +37,23 @@
         <div id="chatStickers" class="sticker-grid"></div>
         <p class="chat-picker-hint">Se guardan en tu perfil y aparecen en todas tus salas.</p>
       </section>
+      <section id="chatStylePanel" class="chat-picker-panel" hidden>
+        <div class="chat-style-head"><strong>Tu burbuja</strong><small>Se guarda en tu perfil y se usa en todas tus salas.</small></div>
+        <label class="chat-style-row">Fondo<select id="chatBubbleMode"><option value="gradient">Degradado</option><option value="solid">Color sólido</option></select></label>
+        <div class="chat-color-grid">
+          <label>Color 1<div class="chat-color-control"><input id="chatBubble1Picker" type="color" value="#dba9f6"><input id="chatBubble1Hex" class="chat-hex" value="#dba9f6" maxlength="7" spellcheck="false"></div></label>
+          <label id="chatBubble2Wrap">Color 2<div class="chat-color-control"><input id="chatBubble2Picker" type="color" value="#f5a9d4"><input id="chatBubble2Hex" class="chat-hex" value="#f5a9d4" maxlength="7" spellcheck="false"></div></label>
+          <label>Texto<div class="chat-color-control"><input id="chatTextPicker" type="color" value="#2e1736"><input id="chatTextHex" class="chat-hex" value="#2e1736" maxlength="7" spellcheck="false"></div></label>
+        </div>
+        <label id="chatAngleWrap" class="chat-style-row">Ángulo <input id="chatGradientAngle" type="range" min="0" max="360" step="1" value="135"><output id="chatGradientAngleValue">135°</output></label>
+        <div class="chat-style-preview"><span>Así se verá tu mensaje ✨</span></div>
+        <button id="chatStyleSave" class="primary chat-style-save" type="button">Guardar colores</button>
+      </section>
     </div>
     <form id="chatForm" class="chat-compose">
-      <button id="chatEmojiButton" type="button" aria-label="Abrir emojis" title="Emojis">☺</button>
+      <button id="chatEmojiButton" type="button" aria-label="Abrir emojis" title="Emojis y kaomoji">☺</button>
       <button id="chatStickerButton" type="button" aria-label="Abrir stickers" title="Stickers">✦</button>
+      <button id="chatStyleButton" type="button" aria-label="Personalizar colores del chat" title="Colores del chat">🎨</button>
       <input id="chatInput" maxlength="500" autocomplete="off" placeholder="Escribe un mensaje…" aria-label="Mensaje">
       <button class="chat-send" type="submit" aria-label="Enviar mensaje">➤</button>
     </form>
