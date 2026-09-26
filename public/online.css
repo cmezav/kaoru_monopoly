@@ -424,3 +424,17 @@ body.game-active main{padding-top:2px}
   #game .center .actions button{min-width:150px;padding:12px 20px!important;font-size:18px!important}
   #game .draw-card-for{font-size:18px}
 }
+
+/* v16.4 — secuencia estricta: dado -> ficha -> resolución de casilla */
+#game .center-sequence-status{
+  margin:10px auto 0;
+  padding:10px 18px;
+  border-radius:999px;
+  background:#ffffffdf;
+  border:1px solid #eadcf4;
+  box-shadow:0 7px 18px #52346618;
+  font-family:'Bryndan Write',cursive;
+  font-size:clamp(18px,1.55vw,22px);
+  font-weight:700;
+  color:#5b4169;
+}
