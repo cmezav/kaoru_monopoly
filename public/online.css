@@ -521,3 +521,118 @@ body.game-active main{padding-top:2px}
 #game .landing-offer .landing-price,#game .landing-offer .landing-spark{display:none!important}
 #game .landing-buy-actions{justify-content:center!important;gap:14px!important}
 #game .landing-buy-actions button{min-width:170px!important;padding:14px 22px!important;font-size:18px!important}
+
+/* v16.5.2 — centro más orgánico, centrado y con menos cajas blancas */
+#game .center{
+  text-align:center!important;
+  color:#3d2a4a;
+}
+#game .center *{text-align:center}
+#game #turnBanner{
+  background:linear-gradient(135deg,rgba(246,233,255,.90),rgba(255,232,247,.82))!important;
+  border:1px solid rgba(177,117,211,.26)!important;
+  box-shadow:0 8px 24px rgba(86,51,111,.12)!important;
+  backdrop-filter:blur(10px) saturate(1.12)!important;
+}
+#game #turnLabel{
+  color:#493457!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.72);
+}
+#game #boardTitle{
+  text-align:center!important;
+  width:100%;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+#game .center #roundLabel,#game .center #potLabel,
+#game .center #event,#game .center-sequence-status{
+  text-align:center!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+#game .center-history{
+  width:min(88%,540px)!important;
+  background:linear-gradient(135deg,rgba(245,233,255,.78),rgba(255,235,248,.70))!important;
+  border:1px solid rgba(175,122,205,.22)!important;
+  border-radius:18px!important;
+  box-shadow:0 8px 22px rgba(77,50,98,.11)!important;
+  backdrop-filter:blur(9px) saturate(1.08)!important;
+  color:#513b5d!important;
+  text-align:center!important;
+}
+#game .center-history>span,
+#game .center-history #history,
+#game .center-history #history li{
+  text-align:center!important;
+}
+#game .center-history #history{padding:0!important;margin:7px auto 0!important}
+#game .center .actions{
+  width:min(92%,620px)!important;
+  max-width:620px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  justify-content:center!important;
+  align-items:center!important;
+  text-align:center!important;
+}
+#game .center .actions>p,
+#game .center .actions>div,
+#game .center .actions>strong{
+  text-align:center!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+#game .landing-offer{
+  width:100%!important;
+  max-width:560px!important;
+  display:flex!important;
+  justify-content:center!important;
+  align-items:center!important;
+  margin:4px auto 2px!important;
+  padding:8px 12px 4px!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+#game .landing-offer .landing-name{
+  display:block!important;
+  width:100%!important;
+  text-align:center!important;
+  color:#392444!important;
+  text-shadow:0 2px 0 rgba(255,255,255,.62),0 0 14px rgba(255,255,255,.45);
+}
+#game .landing-buy-actions{
+  width:100%!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:14px!important;
+  margin:4px auto 0!important;
+}
+#game .landing-buy-actions button{
+  min-width:180px!important;
+  border:1px solid rgba(113,75,147,.18)!important;
+  box-shadow:0 9px 22px rgba(76,45,99,.13)!important;
+}
+#game .landing-buy-actions button.primary{
+  background:linear-gradient(135deg,#9d64d4,#7d56c3)!important;
+  color:#fff!important;
+}
+#game .landing-buy-actions button:not(.primary){
+  background:linear-gradient(135deg,rgba(255,244,252,.94),rgba(239,229,255,.94))!important;
+  color:#4a3558!important;
+}
+#game .center-sequence-status{
+  background:linear-gradient(135deg,rgba(244,233,255,.86),rgba(255,235,248,.80))!important;
+  border:1px solid rgba(176,123,205,.24)!important;
+  box-shadow:0 7px 20px rgba(82,52,102,.10)!important;
+}
+#game .draw-card-body,#game .draw-card-body p,#game .draw-card-for{text-align:center!important}
+#game .draw-card{
+  background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(251,244,255,.96))!important;
+  border-color:rgba(183,128,212,.26)!important;
+}
+@media(max-width:760px){
+  #game .landing-buy-actions button{min-width:145px!important}
+  #game .center-history{width:min(94%,500px)!important}
+}
