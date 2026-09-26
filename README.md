@@ -130,3 +130,10 @@ Al pulsar Guardar en el Editor, el tablero y las cartillas se guardan en la cuen
 - Los efectos de Darwin y del banco se sirven en WebP y se precargan para reducir esperas visuales.
 - Los cambios de turno ya no quedan bloqueados mientras termina una animación visual local.
 - El servidor reutiliza el mismo snapshot para responder y retransmitir acciones, reduciendo trabajo duplicado.
+
+## Ajustes v1.7.12.1
+
+- Las propiedades compradas por cada jugador@ ya no muestran solo el número `1`, `2`, etc.
+- Ahora, cuando una propiedad está **simplemente comprada** (sin casas, hotel ni hipoteca), se ve la **foto de perfil** del dueño como un **círculo pequeño en una esquina**.
+- La miniatura usa **solo la foto**, sin marco decorativo.
+- Si alguien no tiene foto de perfil, se muestra la **inicial** como respaldo.
