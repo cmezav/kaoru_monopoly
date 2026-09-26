@@ -3,7 +3,7 @@ const {randomInt}=require('node:crypto');
 const Model=require('./public/editor/board-model.js');
 const cards=require('./cards.cjs');
 const tiles=Model.tiles();
-const START_CASH=1300,GO_SALARY=150,JAIL_FINE=150,RENT_MULTIPLIER=2;
+const START_CASH=1300,GO_SALARY=150,JAIL_FINE=150,RENT_MULTIPLIER=3;
 const fail=m=>{throw new Error(m)};
 function log(g,text){g.log.push(text);g.log=g.log.slice(-70)}
 function player(g,id){return g.players.find(p=>p.id===id)||fail('No perteneces a esta partida.')}
@@ -23,7 +23,7 @@ function specialVisual(board,pos,vars={}){if(Number(pos)===0)return null;const i
 function emitSpecial(g,board,p,pos,vars={}){const visual=specialVisual(board,pos,vars);if(visual)emitEvent(g,{...visual,player:p.id})}
 function move(g,p,steps,salary=true){const from=p.pos;let next=from+steps;if(salary&&steps>0&&next>=40){p.cash+=GO_SALARY;bankEffect(g,p.id,GO_SALARY,'give','go','por pasar GO');log(g,`El banco entregó ${GO_SALARY} por pasar GO.`)}p.pos=((next%40)+40)%40;g.sequence++;g.movement={id:g.sequence,player:p.id,from,to:p.pos,steps};}
 function complete(g,board,id,groupId){return groupPositions(board,groupId).every(pos=>g.owners[pos]?.id===id&&!g.owners[pos].mortgaged)}
-function rent(g,board,pos,dice){const a=asset(board,pos),o=g.owners[pos];if(!o||o.mortgaged)return 0;if(a.type==='street'){const base=o.level?a.upgradeRents[o.level-1]:(complete(g,board,o.id,a.groupId)?a.groupRent:a.rent);return Math.floor(base*RENT_MULTIPLIER)}const count=Object.entries(g.owners).filter(([key,v])=>v.id===o.id&&asset(board,+key).type===a.type).length;return a.type==='transport'?[50,100,200,400][count-1]:dice*(count===2?40:16)}
+function rent(g,board,pos,dice){const a=asset(board,pos),o=g.owners[pos];if(!o||o.mortgaged)return 0;if(a.type==='street'){const base=o.level?a.upgradeRents[o.level-1]:(complete(g,board,o.id,a.groupId)?a.groupRent:a.rent);return Math.floor(base*RENT_MULTIPLIER)}const count=Object.entries(g.owners).filter(([key,v])=>v.id===o.id&&asset(board,+key).type===a.type).length;return a.type==='transport'?[75,150,300,600][count-1]:dice*(count===2?50:20)}
 function shuffled(n,rng){const a=Array.from({length:n},(_,i)=>i);for(let i=n-1;i>0;i--){const j=rng(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
 const CARD_EFFECTS=new Set(['none','receive','pay','fine','jail','pass','discount','birthday','everyone','repairs','go','back','forward','station','backStation']);
 function cardVisual(board,type,index){const item=board&&board.cards&&Array.isArray(board.cards[type])?board.cards[type][index]:null;if(!item||typeof item!=='object')return {};const base=cards[type]?.[index]||{};const effect=CARD_EFFECTS.has(item.effect)?item.effect:base.effect||'none';const amount=Number.isFinite(Number(item.amount))?Math.max(0,Math.floor(Number(item.amount))):Number(base.amount)||0;const title=typeof item.title==='string'&&item.title.trim()?item.title.trim():'';const rawText=typeof item.text==='string'&&item.text.trim()?item.text:base.text||'';return {text:template(rawText,{amount}),image:typeof item.image==='string'&&item.image.startsWith('data:image/')?item.image:null,label:title?`${type==='community'?'EVENTO':'SUERTE'} · ${title}`:(type==='community'?'EVENTO':'SUERTE'),effect,amount,x:Number.isFinite(Number(item.x))?Math.max(0,Math.min(1,Number(item.x))):.5,y:Number.isFinite(Number(item.y))?Math.max(0,Math.min(1,Number(item.y))):.5,zoom:Number.isFinite(Number(item.zoom))?Math.max(1,Math.min(4,Number(item.zoom))):1}}
