@@ -1,0 +1,22 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),{spawn}=require('node:child_process'),{mkdtempSync,rmSync}=require('node:fs'),{tmpdir}=require('node:os'),path=require('node:path');
+
+test('room chat is realtime and messages, recent emojis and stickers persist',async t=>{
+ const data=mkdtempSync(path.join(tmpdir(),'kaoru-chat-')),port=47000+Math.floor(Math.random()*9000),base=`http://127.0.0.1:${port}`;let child;
+ async function start(){child=spawn(process.execPath,['server.cjs'],{cwd:path.join(__dirname,'..'),env:{...process.env,DATA_DIR:data,PORT:String(port),PUBLIC_URL:''},stdio:['ignore','pipe','pipe']});await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Server timeout')),10000);child.once('exit',code=>{clearTimeout(timer);reject(Error('Server exited '+code))});child.stdout.on('data',v=>{if(String(v).includes('Kaoru listo')){clearTimeout(timer);resolve()}});child.stderr.on('data',v=>{if(!String(v).includes('ExperimentalWarning')&&!String(v).includes('trace-warnings'))process.stderr.write(v)})})}
+ async function stop(){await new Promise(r=>{child.once('exit',r);child.kill('SIGTERM')})}
+ async function call(route,b,cookie){const r=await fetch(base+route,{method:b===undefined?'GET':'POST',headers:{...(cookie?{Cookie:cookie}:{}),...(b!==undefined?{'Content-Type':'application/json'}:{})},body:b===undefined?undefined:JSON.stringify(b)});const type=r.headers.get('content-type')||'';return {status:r.status,data:type.includes('application/json')?await r.json():await r.arrayBuffer(),cookie:r.headers.get('set-cookie')?.split(';')[0],type}}
+ t.after(async()=>{if(child&&child.exitCode===null)await stop();rmSync(data,{recursive:true,force:true})});await start();
+ const users=[];for(let i=0;i<3;i++){const r=await call('/api/register',{username:'chatfriend'+i,password:'chat-password-123'});assert.equal(r.status,200);users.push({cookie:r.cookie,user:r.data.user})}
+ const made=await call('/api/rooms',{rounds:15,pot:false},users[0].cookie);const code=made.data.code;assert.equal((await call(`/api/rooms/${code}/join`,{},users[1].cookie)).status,200);assert.equal((await call(`/api/rooms/${code}/chat`,undefined,users[2].cookie)).status,403);
+ let prefs=await call('/api/chat/profile',undefined,users[0].cookie);assert.deepEqual(prefs.data.recentEmojis,[]);assert.equal(prefs.data.stickers.length,0);
+ const emoji=await call('/api/chat/emoji',{emoji:'😂'},users[0].cookie);assert.equal(emoji.status,200);assert.equal(emoji.data.recentEmojis[0],'😂');
+ const png='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aTu0AAAAASUVORK5CYII=';
+ const sticker=await call('/api/chat/stickers',{data:png},users[0].cookie);assert.equal(sticker.status,201);const stickerId=sticker.data.id;const stickerImg=await call(`/api/chat/stickers/${stickerId}/image`,undefined,users[1].cookie);assert.equal(stickerImg.status,200);assert.equal(stickerImg.type,'image/png');
+ const cancel=new AbortController(),events=await fetch(base+`/api/rooms/${code}/chat/events`,{headers:{Cookie:users[1].cookie},signal:cancel.signal});assert.equal(events.status,200);const reader=events.body.getReader();let buffer='';
+ async function event(){while(!buffer.includes('\n\n')){const {value,done}=await reader.read();if(done)throw Error('chat stream ended');buffer+=Buffer.from(value).toString()}const pos=buffer.indexOf('\n\n'),raw=buffer.slice(0,pos);buffer=buffer.slice(pos+2);const line=raw.split('\n').find(l=>l.startsWith('data: '));return line?JSON.parse(line.slice(6)):event()}
+ assert.equal((await call(`/api/rooms/${code}/chat`,{text:'Hola 😂'},users[0].cookie)).status,201);const live=await event();assert.equal(live.text,'Hola 😂');assert.equal(live.userId,users[0].user.id);
+ assert.equal((await call(`/api/rooms/${code}/chat`,{stickerId},users[0].cookie)).status,201);
+ let history=await call(`/api/rooms/${code}/chat`,undefined,users[1].cookie);assert.equal(history.status,200);assert.equal(history.data.messages.length,2);assert.equal(history.data.messages[1].stickerId,stickerId);
+ cancel.abort();await reader.cancel().catch(()=>{});await stop();await start();
+ prefs=await call('/api/chat/profile',undefined,users[0].cookie);assert.equal(prefs.data.recentEmojis[0],'😂');assert.equal(prefs.data.stickers[0].id,stickerId);history=await call(`/api/rooms/${code}/chat`,undefined,users[1].cookie);assert.equal(history.data.messages.length,2);assert.equal(history.data.messages[0].text,'Hola 😂');
+},{timeout:30000});

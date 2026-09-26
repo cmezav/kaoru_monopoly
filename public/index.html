@@ -17,6 +17,36 @@
     <strong id="roomLoaderEta">Aprox. 4 s</strong>
   </div>
 </div>
+<aside id="roomChat" class="room-chat" hidden aria-label="Chat de la sala">
+  <div class="chat-head">
+    <div class="chat-title"><strong>Chat de la sala</strong><small id="chatRoomCode"></small></div>
+    <span id="chatUnread" class="chat-unread" hidden>0</span>
+    <button id="chatMinimize" type="button" aria-label="Minimizar chat" title="Minimizar chat">—</button>
+  </div>
+  <div id="chatBody" class="chat-body">
+    <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
+    <div id="chatPicker" class="chat-picker" hidden>
+      <section id="chatEmojiPanel" class="chat-picker-panel">
+        <div class="chat-picker-label">Recientes</div>
+        <div id="chatRecentEmojis" class="emoji-grid"></div>
+        <div class="chat-picker-label">Emojis</div>
+        <div id="chatAllEmojis" class="emoji-grid emoji-all"></div>
+      </section>
+      <section id="chatStickerPanel" class="chat-picker-panel" hidden>
+        <div class="chat-sticker-head"><div><strong>Tus stickers</strong><small id="chatStickerCount"></small></div><button id="chatStickerUploadButton" type="button">＋ Subir</button></div>
+        <input id="chatStickerFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+        <div id="chatStickers" class="sticker-grid"></div>
+        <p class="chat-picker-hint">Se guardan en tu perfil y aparecen en todas tus salas.</p>
+      </section>
+    </div>
+    <form id="chatForm" class="chat-compose">
+      <button id="chatEmojiButton" type="button" aria-label="Abrir emojis" title="Emojis">☺</button>
+      <button id="chatStickerButton" type="button" aria-label="Abrir stickers" title="Stickers">✦</button>
+      <input id="chatInput" maxlength="500" autocomplete="off" placeholder="Escribe un mensaje…" aria-label="Mensaje">
+      <button class="chat-send" type="submit" aria-label="Enviar mensaje">➤</button>
+    </form>
+  </div>
+</aside>
 <div id="gameFab" class="game-fab" hidden>
   <button id="fabSound" class="fab-item fab-1" type="button" data-label="Sonido" aria-label="Activar o desactivar sonido">♪</button>
   <button id="fabEditor" class="fab-item fab-2" type="button" data-label="Editor" aria-label="Abrir editor">✎</button>
