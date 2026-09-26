@@ -782,3 +782,27 @@ body:not(.game-active){background:linear-gradient(180deg,#faf8fd 0%,#f3eef9 100%
 .fab-volume-panel label:last-child{margin-bottom:0}
 .fab-volume-panel input[type="range"]{width:100%;accent-color:#ca56d9;cursor:pointer}
 @media(max-width:760px){.game-fab .fab-volume-panel{left:62px;width:min(220px,calc(100vw - 90px));padding:10px 12px}.fab-volume-panel label{grid-template-columns:54px 1fr}}
+
+/* v1.7.12 · premio del bote: video silencioso en lugar de cartilla/gatito */
+#game #bankFx.pot-video{
+  left:50%!important;
+  top:54%!important;
+  width:min(430px,62%)!important;
+  gap:10px!important;
+}
+#game #bankFx.pot-video .pot-win-video{
+  display:block;
+  width:min(380px,100%);
+  aspect-ratio:1/1;
+  object-fit:cover;
+  border-radius:20px;
+  background:#000;
+  box-shadow:0 16px 42px #0004;
+}
+#game #bankFx.pot-video .bank-message{
+  max-width:430px;
+  font-size:clamp(20px,1.8vw,27px);
+}
+@media(max-width:760px){
+  #game #bankFx.pot-video{left:50%!important;top:57%!important;width:76%!important}
+}
