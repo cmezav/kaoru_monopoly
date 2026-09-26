@@ -36,7 +36,6 @@ const effectOptions=[
 const amountEffects=new Set(['receive','pay','fine','birthday','everyone','forward','back']);
 const validEffects=new Set(effectOptions.map(([v])=>v));
 const defaultSpecialCards={
-  '0':{label:'GO · Salida',text:'Llegaste a GO. El banco te entrega {amount}.'},
   '4':{label:'Impuesto',text:'Impuesto. Paga {amount} al banco.'},
   '10':{label:'Cárcel / Visita',text:'Solo estás de visita. Por ahora no pasa nada.'},
   '20':{label:'Parada libre',text:'Parada libre. {potText}'},

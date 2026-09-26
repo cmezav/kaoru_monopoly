@@ -328,3 +328,99 @@ body.game-active main{padding-top:2px}
 #game .draw-card-body p{margin:0!important;font-size:clamp(20px,2vw,25px)!important;line-height:1.35!important}
 #game .draw-card-kicker,#game .draw-card-owner{display:none!important}
 @media(max-width:760px){#game #bankFx{left:78%!important;top:66%!important;width:38%!important}#game #bankFx.money-only{left:62%!important;top:75%!important;width:74%!important}}
+
+/* v1.6.3 — loader de sala, centro blanco con video y cartillas limpias */
+#game #board{background:#fff!important}
+#game .center{
+  width:100%!important;
+  height:100%!important;
+  justify-self:stretch!important;
+  align-self:stretch!important;
+  background:#fff!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:hidden!important;
+  isolation:isolate;
+}
+#game .center-video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  opacity:.50;
+  z-index:0;
+  pointer-events:none;
+  background:#fff;
+}
+#game #turnBanner,#game .center>.orb,#game #boardTitle,#game #dice,#game #roundLabel,#game #potLabel,#game #historyBox,#game #actions{
+  position:relative;
+  z-index:2;
+}
+#game #turnBanner{background:#fffffff0;backdrop-filter:blur(4px)}
+#game #turnLabel{font-size:clamp(21px,1.6vw,26px)!important;line-height:1.05}
+#game .center #roundLabel,#game .center #potLabel{
+  font-size:clamp(20px,1.7vw,25px)!important;
+  line-height:1.15!important;
+  font-weight:700;
+  color:#493657!important;
+  text-shadow:0 1px 0 #fff,0 0 7px #fff;
+}
+#game .center .actions button{
+  min-width:170px;
+  padding:14px 26px!important;
+  border-radius:12px;
+  font-size:clamp(19px,1.5vw,23px)!important;
+  font-weight:800;
+  box-shadow:0 8px 18px #55306f24;
+}
+#game .draw-card-body{padding:8px 10px 8px!important;display:flex!important;flex:1!important;flex-direction:column!important}
+#game .draw-card-body p{margin:0!important;flex:1 1 auto!important}
+#game .draw-card-for{
+  margin-top:16px;
+  padding:13px 8px 4px;
+  border-top:2px solid #eadcf4;
+  color:#8355a0;
+  font-family:'Bryndan Write',cursive;
+  font-size:clamp(18px,1.6vw,22px);
+  font-weight:800;
+  line-height:1.15;
+  text-align:center;
+}
+.room-loader{
+  position:fixed;
+  inset:0;
+  z-index:5000;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:#fff;
+  opacity:1;
+  transition:opacity .22s ease;
+}
+.room-loader.done{opacity:0;pointer-events:none}
+.room-loader-card{
+  width:min(430px,calc(100vw - 38px));
+  padding:34px 30px 30px;
+  border:1px solid #eadff2;
+  border-radius:28px;
+  background:#fff;
+  box-shadow:0 24px 70px #4d31551f;
+  text-align:center;
+  color:#3b2948;
+}
+.room-loader-star{font-size:46px;line-height:1;color:#a56ac6;animation:loader-star 1s ease-in-out infinite alternate}
+.room-loader-code{min-height:18px;margin:7px 0 4px;font-size:12px;font-weight:800;letter-spacing:.16em;color:#956daf;text-transform:uppercase}
+.room-loader-card h2{margin:4px 0 9px;font-family:'DM Serif Display',serif;font-size:32px;font-weight:400}
+.room-loader-card>p:not(.room-loader-code){margin:0 0 18px;font-family:'Bryndan Write',cursive;font-size:18px;color:#665270}
+.room-loader-track{height:10px;border-radius:999px;background:#eee6f3;overflow:hidden}
+.room-loader-track span{display:block;width:8%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#9a64d1,#ef61b7);transition:width .25s ease}
+.room-loader-card strong{display:block;margin-top:12px;font-size:14px;color:#7d628c}
+@keyframes loader-star{to{transform:scale(1.16) rotate(8deg);filter:drop-shadow(0 0 12px #ce8fe6)}}
+@media(max-width:760px){
+  #game #turnLabel{font-size:18px!important}
+  #game .center #roundLabel,#game .center #potLabel{font-size:18px!important}
+  #game .center .actions button{min-width:150px;padding:12px 20px!important;font-size:18px!important}
+  #game .draw-card-for{font-size:18px}
+}
