@@ -46,8 +46,17 @@
           <label>Texto<div class="chat-color-control"><input id="chatTextPicker" type="color" value="#2e1736"><input id="chatTextHex" class="chat-hex" value="#2e1736" maxlength="7" spellcheck="false"></div></label>
         </div>
         <label id="chatAngleWrap" class="chat-style-row">Ángulo <input id="chatGradientAngle" type="range" min="0" max="360" step="1" value="135"><output id="chatGradientAngleValue">135°</output></label>
-        <div class="chat-style-preview"><span>Así se verá tu mensaje ✨</span></div>
-        <button id="chatStyleSave" class="primary chat-style-save" type="button">Guardar colores</button>
+        <label class="chat-style-row">Tamaño <input id="chatFontSize" type="range" min="11" max="24" step="1" value="14"><output id="chatFontSizeValue">14 px</output></label>
+        <label class="chat-style-row">Alineación <select id="chatTextAlign"><option value="left">Izquierda</option><option value="center">Centro</option><option value="right">Derecha</option></select></label>
+        <label class="chat-style-row">Posición X <input id="chatTextX" type="range" min="-10" max="10" step="1" value="0"><output id="chatTextXValue">0 px</output></label>
+        <label class="chat-style-row">Posición Y <input id="chatTextY" type="range" min="-10" max="10" step="1" value="0"><output id="chatTextYValue">0 px</output></label>
+        <div class="chat-font-box">
+          <div><strong>Fuente personalizada</strong><small id="chatFontName">Fuente predeterminada</small><small>.TTF / .OTF o ZIP que contenga una fuente.</small></div>
+          <div class="chat-font-actions"><button id="chatFontUploadButton" type="button">Subir fuente</button><button id="chatFontRemoveButton" type="button">Quitar</button></div>
+          <input id="chatFontFile" type="file" accept=".ttf,.tff,.otf,.zip,font/ttf,font/otf,application/zip" hidden>
+        </div>
+        <div class="chat-style-preview"><span class="chat-preview-bubble"><span class="chat-preview-text">Así se verá tu mensaje ✨</span></span></div>
+        <button id="chatStyleSave" class="primary chat-style-save" type="button">Guardar estilo</button>
       </section>
     </div>
     <form id="chatForm" class="chat-compose">

@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS assets(id TEXT PRIMARY KEY,user_id TEXT,kind TEXT,nam
 CREATE TABLE IF NOT EXISTS board_configs(user_id TEXT PRIMARY KEY,board TEXT,updated BIGINT);
 CREATE TABLE IF NOT EXISTS room_messages(id TEXT PRIMARY KEY,room TEXT,user_id TEXT,kind TEXT,text TEXT,sticker_id TEXT,created BIGINT);
 CREATE TABLE IF NOT EXISTS stickers(id TEXT PRIMARY KEY,user_id TEXT,data TEXT,created BIGINT,last_used BIGINT,use_count INTEGER);
+CREATE TABLE IF NOT EXISTS chat_fonts(user_id TEXT PRIMARY KEY,name TEXT,mime TEXT,data TEXT,updated BIGINT);
 CREATE INDEX IF NOT EXISTS assets_user ON assets(user_id);
 CREATE INDEX IF NOT EXISTS room_messages_room_created ON room_messages(room,created);
 CREATE INDEX IF NOT EXISTS stickers_user_recent ON stickers(user_id,last_used);`;
