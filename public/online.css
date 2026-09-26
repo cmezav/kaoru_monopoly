@@ -639,11 +639,17 @@ body.game-active main{padding-top:2px}
 
 
 /* v1.6.5.3 — rejas de cárcel sobre fichas encarceladas */
-#game .jail-bars-overlay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:9.1%;height:9.1%;display:flex;align-items:stretch;justify-content:space-evenly;padding:8px 10px 18px;pointer-events:none;z-index:11}
-#game .jail-bars-overlay .jail-bar{width:10%;height:100%;border-radius:10px;background:linear-gradient(180deg,#e5e6eb 0%,#9ea2ab 16%,#737784 50%,#a7abb4 84%,#f0f1f4 100%);box-shadow:inset 1px 0 0 #ffffffaa,inset -1px 0 0 #4b4e590f,0 0 5px #00000022;opacity:.92}
+#game .jail-bars-overlay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:9.09%;height:9.09%;display:block;overflow:hidden;pointer-events:none;z-index:11;border-radius:0;background:linear-gradient(180deg,transparent 0 71%,rgba(150,154,164,.88) 71%,rgba(121,125,136,.9) 100%)}
+#game .jail-bars-overlay .jail-bar{position:absolute;top:0;bottom:28%;width:8%;border-radius:0;background:linear-gradient(180deg,#eceef2 0%,#a8adb7 18%,#707582 50%,#a9adb7 82%,#eef0f3 100%);box-shadow:inset 1px 0 0 #ffffffb8,inset -1px 0 0 #5558641a,0 0 4px #00000020;opacity:.96}
+#game .jail-bars-overlay .jail-bar:nth-child(1){left:10%}
+#game .jail-bars-overlay .jail-bar:nth-child(2){left:28%}
+#game .jail-bars-overlay .jail-bar:nth-child(3){left:46%}
+#game .jail-bars-overlay .jail-bar:nth-child(4){left:64%}
+#game .jail-bars-overlay .jail-bar:nth-child(5){left:82%}
+#game .tile.jail .title,#game .tile.jail .cost,#game .tile.jail span,#game .tile.jail>b,#game .tile.jail strong,#game .tile.jail small{position:relative;z-index:12}
 #game .piece.piece-jailed{z-index:10}
-#game .piece.piece-free{z-index:12}
-@media(max-width:760px){#game .jail-bars-overlay{width:9.5%;height:9.5%;padding:7px 8px 17px}}
+#game .piece.piece-free{z-index:13}
+@media(max-width:760px){#game .jail-bars-overlay{width:9.5%;height:9.5%}#game .jail-bars-overlay .jail-bar{bottom:29%}}
 
 
 /* v1.6.6 — lobby grande con video, barra alineada y lenguaje neutral */
