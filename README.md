@@ -116,3 +116,11 @@ Pasan **14 pruebas**: motor de juego, integración HTTP/SSE con cuatro clientes 
 ## Editor sincronizado
 
 Al pulsar Guardar en el Editor, el tablero y las cartillas se guardan en la cuenta. Las salas nuevas creadas con **Tablero guardado del Editor** usan automáticamente esa versión, incluyendo imágenes y encuadres. Las salas ya iniciadas conservan la copia con la que empezaron para evitar cambios a mitad de partida.
+
+## Ajustes v1.6.2
+
+- Mensajes de dinero con motivo explícito (por ejemplo, alquiler de una propiedad, compra, impuesto, hipoteca o salida de prisión).
+- Las cartillas emergentes muestran solo imagen y descripción; la descripción indica claramente a qué jugadora le salió.
+- Los efectos de Darwin y del banco se sirven en WebP y se precargan para reducir esperas visuales.
+- Los cambios de turno ya no quedan bloqueados mientras termina una animación visual local.
+- El servidor reutiliza el mismo snapshot para responder y retransmitir acciones, reduciendo trabajo duplicado.

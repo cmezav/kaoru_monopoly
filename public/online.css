@@ -313,3 +313,18 @@ body.game-active main{padding-top:2px}
   #game #bankFx.money-only{left:50%!important;top:72%!important;width:82%!important}
   #game #bankFx .bank-message{font-size:17px;padding:6px 9px}
 }
+
+
+/* v1.6.2 — visuales precargados, turno sin bloqueo y cartillas sin títulos */
+#game .dice,#game .dice.mascot,#game .dice.darwin-roll{
+  place-items:end center!important;
+  overflow:visible!important;
+}
+#game .dice.darwin-roll img{height:var(--darwin-roll-h)!important;align-self:end!important}
+#game .dice.mascot img{height:var(--darwin-idle-h)!important;align-self:end!important}
+#game #bankFx{left:84%!important;top:64%!important;width:min(230px,30%)!important}
+#game #bankFx.money-only{left:72%!important;top:72%!important;width:min(430px,66%)!important}
+#game .draw-card-body{padding:8px 10px 12px!important;gap:0!important;justify-content:flex-start!important}
+#game .draw-card-body p{margin:0!important;font-size:clamp(20px,2vw,25px)!important;line-height:1.35!important}
+#game .draw-card-kicker,#game .draw-card-owner{display:none!important}
+@media(max-width:760px){#game #bankFx{left:78%!important;top:66%!important;width:38%!important}#game #bankFx.money-only{left:62%!important;top:75%!important;width:74%!important}}
