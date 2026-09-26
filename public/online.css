@@ -639,19 +639,20 @@ body.game-active main{padding-top:2px}
 
 
 /* v1.6.5.3 — rejas de cárcel sobre fichas encarceladas */
-#game .jail-bars-overlay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:8.78%;height:8.78%;display:block;overflow:hidden;pointer-events:none;z-index:11;border-radius:0;background:linear-gradient(180deg,transparent 0 84%,rgba(163,166,175,.95) 84%,rgba(123,127,138,.96) 100%)}
-#game .jail-bars-overlay .jail-bar{position:absolute;top:0;bottom:16%;width:7.5%;border-radius:0;background:linear-gradient(180deg,#eceef2 0%,#a8adb7 18%,#707582 50%,#a9adb7 82%,#eef0f3 100%);box-shadow:inset 1px 0 0 #ffffffb8,inset -1px 0 0 #5558641a,0 0 4px #00000020;opacity:.96}
+#game .jail-bars-overlay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:8.56%;height:8.56%;display:block;overflow:hidden;pointer-events:none;z-index:11;border-radius:0;background:none}
+#game .jail-bars-overlay .jail-bar{position:absolute;top:0;bottom:13%;width:7.2%;border-radius:0;background:linear-gradient(180deg,#eceef2 0%,#a8adb7 18%,#707582 50%,#a9adb7 82%,#eef0f3 100%);box-shadow:inset 1px 0 0 #ffffffb8,inset -1px 0 0 #5558641a,0 0 4px #00000020;opacity:.96}
 #game .jail-bars-overlay .jail-bar:nth-child(1){left:11%}
 #game .jail-bars-overlay .jail-bar:nth-child(2){left:29%}
 #game .jail-bars-overlay .jail-bar:nth-child(3){left:47%}
 #game .jail-bars-overlay .jail-bar:nth-child(4){left:65%}
 #game .jail-bars-overlay .jail-bar:nth-child(5){left:83%}
-#game .tile.jail>span,#game .tile.jail>b,#game .tile.jail strong,#game .tile.jail small{position:relative;z-index:14}
-#game .tile.jail>b{top:3px}
-#game .tile.jail>span{position:absolute;left:3px;right:3px;bottom:2px;z-index:15;display:block;text-align:center;font-size:clamp(7px,.64vw,10px);line-height:1.02;font-weight:900;letter-spacing:.03em;color:#fff;text-shadow:0 1px 2px #0008,0 0 4px #0000003a}
+#game .tile.jail::after{content:'';position:absolute;left:0;right:0;bottom:0;height:13%;background:linear-gradient(180deg,rgba(170,173,181,.95) 0%,rgba(123,127,138,.97) 100%);z-index:9}
+#game .tile.jail>span,#game .tile.jail>b,#game .tile.jail strong,#game .tile.jail small{position:relative}
+#game .tile.jail>b{position:absolute;top:2px;left:2px;z-index:14;width:14px;height:14px;display:grid;place-items:center;border-radius:4px;background:rgba(255,255,255,.88);color:#666b76;border:1px solid rgba(97,102,114,.45);font-size:9px;line-height:1;text-shadow:none;box-shadow:0 1px 2px #00000016}
+#game .tile.jail>span{position:absolute;left:2px;right:2px;bottom:1px;z-index:12;display:block;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:clip;font-size:clamp(5.8px,.5vw,8px);line-height:1;font-weight:900;letter-spacing:-.01em;color:#fff;text-shadow:0 1px 2px #0008}
 #game .piece.piece-jailed{z-index:10}
 #game .piece.piece-free{z-index:13}
-@media(max-width:760px){#game .jail-bars-overlay{width:9.08%;height:9.08%;background:linear-gradient(180deg,transparent 0 84%,rgba(163,166,175,.95) 84%,rgba(123,127,138,.96) 100%)}#game .jail-bars-overlay .jail-bar{bottom:16%}#game .tile.jail>span{font-size:8px;bottom:1px}}
+@media(max-width:760px){#game .jail-bars-overlay{width:8.9%;height:8.9%}#game .jail-bars-overlay .jail-bar{bottom:13%}#game .tile.jail::after{height:13%}#game .tile.jail>span{font-size:6px;bottom:1px}#game .tile.jail>b{width:12px;height:12px;font-size:8px}}
 
 
 /* v1.6.6 — lobby grande con video, barra alineada y lenguaje neutral */
