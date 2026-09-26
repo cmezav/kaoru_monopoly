@@ -757,3 +757,28 @@ body:not(.game-active){background:linear-gradient(180deg,#faf8fd 0%,#f3eef9 100%
 .chat-font-box>div:first-child{display:flex;flex-direction:column;gap:2px;min-width:0}.chat-font-box strong{font-size:12px;color:#4c3855}.chat-font-box small{font-size:10px;color:#8e7997;overflow-wrap:anywhere}.chat-font-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.chat-font-actions button{min-height:31px;padding:6px 9px!important;border-radius:9px!important;font-size:11px!important}
 .chat-style-row select{min-width:0;padding:7px 8px}
 @media(max-width:760px){.chat-avatar.avatar{width:29px!important;height:29px!important;flex-basis:29px}.chat-message-content{max-width:calc(100% - 36px)}.chat-font-box{grid-template-columns:1fr}.chat-font-actions{justify-content:flex-start}}
+
+/* v1.7.9 — controles separados de efectos y música */
+.game-fab .fab-volume-panel{
+  position:absolute;
+  left:220px;
+  bottom:0;
+  width:230px;
+  padding:11px 13px 10px;
+  border:1px solid #d9b7eb;
+  border-radius:16px;
+  background:rgba(255,255,255,.96);
+  box-shadow:0 10px 30px #0003;
+  opacity:0;
+  transform:translateX(-8px) scale(.96);
+  transform-origin:left bottom;
+  pointer-events:none;
+  transition:opacity .16s ease,transform .2s ease;
+  backdrop-filter:blur(12px);
+  z-index:4
+}
+.game-fab.open .fab-volume-panel{opacity:1;transform:translateX(0) scale(1);pointer-events:auto}
+.fab-volume-panel label{display:grid;grid-template-columns:58px 1fr;gap:9px;align-items:center;margin:0 0 8px;font-size:12px;font-weight:800;color:#5d3875}
+.fab-volume-panel label:last-child{margin-bottom:0}
+.fab-volume-panel input[type="range"]{width:100%;accent-color:#ca56d9;cursor:pointer}
+@media(max-width:760px){.game-fab .fab-volume-panel{left:62px;width:min(220px,calc(100vw - 90px));padding:10px 12px}.fab-volume-panel label{grid-template-columns:54px 1fr}}
