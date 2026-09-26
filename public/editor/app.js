@@ -8,7 +8,7 @@ const defaultCardDefs={
   chance:[
     {title:'Jax · Dado escondido',text:'Jax escondió tu dado. Retrocede tres casillas.',effect:'back',amount:3},
     {title:'Caine · Cambio de escenario',text:'Caine cambia el escenario. Avanza hasta la próxima estación.',effect:'station'},
-    {title:'Luz · Portal a GO',text:'Luz abre un portal. Avanza hasta GO y cobra 150.',effect:'go'},
+    {title:'Luz · Portal a GO',text:'Luz abre un portal. Avanza hasta GO y cobra 200.',effect:'go'},
     {title:'Trampa con el dado · Cárcel',text:'Te descubrieron haciendo trampa con el dado. Ve a la cárcel sin cobrar GO.',effect:'jail'},
     {title:'Cámara · Salida de la cárcel',text:'La cámara demuestra que no fuiste tú. Conserva esta carta para salir de la cárcel.',effect:'pass'},
     {title:'Eda · Compra basura',text:'Eda te vendió algo que resultó ser basura. Paga 100 al banco.',effect:'pay',amount:100},
@@ -18,12 +18,12 @@ const defaultCardDefs={
     {title:'Atajo · Avanza 2',text:'Encontraste un atajo. Avanza dos casillas y resuelve donde caigas.',effect:'forward',amount:2}
   ],
   community:[
-    {title:'Banco · Cobro duplicado',text:'El banco te cobró dos veces. Recupera 100.',effect:'receive',amount:100},
-    {title:'Chaqueta vieja · Dinero encontrado',text:'Encontraste dinero en una chaqueta vieja. Cobra 50.',effect:'receive',amount:50},
-    {title:'Cumpleaños · Cada rival te entrega 50',text:'Es tu cumpleaños. Cada rival activo te entrega 50.',effect:'birthday',amount:50},
+    {title:'Banco · Cobro duplicado',text:'El banco te cobró dos veces. Recupera 200.',effect:'receive',amount:100},
+    {title:'Chaqueta vieja · Dinero encontrado',text:'Encontraste dinero en una chaqueta vieja. Cobra 100.',effect:'receive',amount:50},
+    {title:'Cumpleaños · Cada rival te entrega 50',text:'Es tu cumpleaños. Cada rival activo te entrega 75.',effect:'birthday',amount:50},
     {title:'Entradas para el grupo · Paga a las rivales',text:'Compraste entradas para el grupo. Paga 50 a cada rival activo.',effect:'everyone',amount:50},
-    {title:'Concurso de cosplay · Premio',text:'Ganaste un concurso de cosplay. Cobra 100.',effect:'receive',amount:100},
-    {title:'Pedido incompleto · Devolución',text:'Tu pedido llegó incompleto. El banco te devuelve 75.',effect:'receive',amount:75},
+    {title:'Concurso de cosplay · Premio',text:'Ganaste un concurso de cosplay. Cobra 200.',effect:'receive',amount:100},
+    {title:'Pedido incompleto · Devolución',text:'Tu pedido llegó incompleto. El banco te devuelve 150.',effect:'receive',amount:75},
     {title:'Multa atrasada',text:'Te llegó una multa que ignoraste semanas. Paga 100 al bote si está activado; de lo contrario, al banco.',effect:'fine',amount:100},
     {title:'Tubería rota · Reparaciones',text:'Una tubería se rompió. Paga 50 por casa y 200 por hotel.',effect:'repairs'},
     {title:'Cupón · Descuento de alquiler',text:'Recibiste un cupón. Conserva esta carta: reduce automáticamente tu próximo alquiler en 100, sin bajarlo de cero.',effect:'discount'},
@@ -63,6 +63,7 @@ function ensureCards(value){
     const defs=defaultCardDefs[kind];
     value.cards[kind]=defs.map((def,i)=>normalizeCard(src[i]||{},def,false));
     for(let i=defs.length;i<src.length;i++)value.cards[kind].push(normalizeCard(src[i],{},true));
+    for(const card of value.cards[kind]){const before=Number(card.amount)||0;if(card.effect==='receive'&&before<150)card.amount=150;if(card.effect==='birthday'&&before<75)card.amount=75;if(card.effect==='go')card.text=String(card.text||'').replace(/\b150\b/g,'200');else if(card.amount!==before&&before>0&&!String(card.text||'').includes('{amount}'))card.text=String(card.text||'').replace(new RegExp(`\b${before}\b`),String(card.amount))}
   }
   const special=value.specialCards||{};
   value.specialCards=Object.fromEntries(Object.entries(defaultSpecialCards).map(([pos,def])=>[pos,{label:def.label,text:special[pos]?.text||def.text,image:special[pos]?.image||null,x:Number.isFinite(Number(special[pos]?.x))?clamp(Number(special[pos].x),0,1):.5,y:Number.isFinite(Number(special[pos]?.y))?clamp(Number(special[pos].y),0,1):.5,zoom:Number.isFinite(Number(special[pos]?.zoom))?clamp(Number(special[pos].zoom),1,4):1}]));
