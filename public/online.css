@@ -644,3 +644,36 @@ body.game-active main{padding-top:2px}
 #game .piece.piece-jailed{z-index:10}
 #game .piece.piece-free{z-index:12}
 @media(max-width:760px){#game .jail-bars-overlay{width:9.5%;height:9.5%;padding:7px 8px 17px}}
+
+
+/* v1.6.6 — lobby grande con video, barra alineada y lenguaje neutral */
+header{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:18px;max-width:1720px;margin:0 auto;padding:18px 2.6%;background:rgba(250,248,253,.84);backdrop-filter:blur(12px);border-bottom:1px solid #e8dff2}
+header .brand{display:flex;flex-direction:column;gap:2px;font:800 28px/1 Arial,sans-serif;color:#6a4db4;text-decoration:none;letter-spacing:.01em}
+header .brand span{font:700 11px/1.2 Arial,sans-serif;letter-spacing:.22em;color:#7c6a95}
+header nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:12px;margin-left:auto}
+header nav>a,header nav>button{min-height:44px;padding:0 18px;border-radius:14px;border:1px solid #d9cceb;background:rgba(255,255,255,.72);font-size:22px;color:#433357;box-shadow:0 4px 16px #7349a610;backdrop-filter:blur(8px)}
+header nav>a{text-decoration:none;display:inline-flex;align-items:center}#connection{font-size:14px;font-weight:700;color:#3d8765;margin-right:6px}
+main{max-width:1720px;padding:26px 2.6% 36px}
+body:not(.game-active){background:linear-gradient(180deg,#faf8fd 0%,#f3eef9 100%)}
+#lobby{position:relative;overflow:hidden;border-radius:34px;padding:38px 28px 30px;isolation:isolate;min-height:760px}
+#lobby .intro,#lobby .lobby-grid{position:relative;z-index:2}
+#lobby .intro{margin:0 0 28px 0;padding:16px 6px 10px}
+#lobby .intro h1{font-size:clamp(52px,5vw,78px);line-height:1.02;margin:8px 0 14px}
+#lobby .intro p:last-child{max-width:800px;font-size:24px;line-height:1.45;color:#4f3d62}
+.lobby-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5;z-index:0;transform:scale(1.06)}
+.lobby-video-wash{position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.58),rgba(246,239,252,.68) 48%,rgba(255,255,255,.54));z-index:1}
+#lobby .eyebrow{font-size:13px;letter-spacing:.36em;color:#8f71b4;font-weight:800}
+#lobby .lobby-grid{grid-template-columns:1.02fr .98fr;gap:30px;align-items:start}
+#lobby .panel{padding:34px 30px;border-radius:30px;background:rgba(255,255,255,.78);border:1px solid rgba(221,206,240,.92);box-shadow:0 18px 42px #6c4f8a18;backdrop-filter:blur(14px)}
+#lobby .panel h2{font-size:42px;line-height:1.05;margin:0 0 20px}
+#lobby label{font-size:18px;font-weight:700;color:#463755;display:block;margin-bottom:14px}
+#lobby input,#lobby select{margin-top:8px;min-height:56px;font-size:20px;padding:14px 16px;border-radius:16px;border:1px solid #d9ccec;background:rgba(255,255,255,.95)}
+#lobby .check{margin:16px 0 18px;font-size:17px;line-height:1.45;color:#4f3d62}
+#lobby .check input{transform:scale(1.2);margin-right:8px}
+#lobby .primary{min-height:54px;padding:0 22px;font-size:22px;border-radius:16px}
+#rooms{display:grid;gap:12px;margin-top:10px}
+#rooms .room-link{display:flex;align-items:center;justify-content:center;min-height:54px;margin:0;padding:0 18px;border-radius:16px;border:1px solid #d7c8ea;background:rgba(255,255,255,.8);font-size:22px;font-weight:700;color:#463755;box-shadow:0 8px 18px #7a51a80d}
+#waiting{max-width:900px;padding:34px}#waiting h1{font-size:48px}#waiting .hint,#auth .hint{font-size:16px}
+#auth{max-width:760px}#auth p,#auth label,#auth input{font-size:18px}#auth input{min-height:54px}
+@media(max-width:1180px){header nav>a,header nav>button{font-size:18px;padding:0 14px}#lobby .intro h1{font-size:clamp(42px,8vw,64px)}#lobby .intro p:last-child{font-size:21px}#lobby .lobby-grid{grid-template-columns:1fr}#lobby{min-height:unset}}
+@media(max-width:760px){header{padding:14px 16px}header .brand{font-size:22px}header nav{gap:8px}header nav>a,header nav>button{min-height:40px;font-size:15px;padding:0 12px}main{padding:16px}#lobby{padding:18px 14px}#lobby .panel{padding:22px 18px}#lobby .panel h2{font-size:30px}#lobby .intro h1{font-size:38px}#lobby .intro p:last-child{font-size:18px}#lobby input,#lobby select,#rooms .room-link{font-size:17px;min-height:48px}#lobby .primary{font-size:18px;min-height:48px}}
