@@ -137,3 +137,13 @@ Al pulsar Guardar en el Editor, el tablero y las cartillas se guardan en la cuen
 - Ahora, cuando una propiedad está **simplemente comprada** (sin casas, hotel ni hipoteca), se ve la **foto de perfil** del dueño como un **círculo pequeño en una esquina**.
 - La miniatura usa **solo la foto**, sin marco decorativo.
 - Si alguien no tiene foto de perfil, se muestra la **inicial** como respaldo.
+
+## Ajustes v1.7.13
+
+- Debajo de **Tu partida** aparece **Mis propiedades** con mini tarjetas de todas las propiedades del jugador actual; incluye imagen y nombre y la lista puede crecer con el scroll lateral hasta cubrir el máximo de propiedades posibles.
+- Las tarjetas son clicables para abrir el detalle de esa casilla.
+- El indicador anterior de edificios usaba `⌂` repetido para casas y el texto `HOTEL` para el nivel 5. Ahora se sustituyó por las animaciones entregadas.
+- Las animaciones de casa y hotel se convirtieron a **WebP animado transparente en loop** para que muchas propiedades puedan mostrarlas sin cargar decenas de reproductores de video.
+- La casa se muestra con exactamente la mitad de altura visual del hotel. Para 2–4 casas se muestra una casa animada con contador `×N`; el hotel se muestra como una sola torre animada.
+- Los edificios aparecen tanto sobre la casilla correspondiente del tablero como sobre la mini tarjeta de la propiedad.
+- La foto circular del propietario se conserva sobre la casilla incluso cuando hay casas/hotel.

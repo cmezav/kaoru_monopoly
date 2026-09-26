@@ -806,3 +806,34 @@ body:not(.game-active){background:linear-gradient(180deg,#faf8fd 0%,#f3eef9 100%
 @media(max-width:760px){
   #game #bankFx.pot-video{left:50%!important;top:57%!important;width:76%!important}
 }
+
+
+/* v1.7.13 — mini portfolio + animated buildings */
+#game .owner-badge.owner-badge-avatar{top:3px;right:3px;width:22px;height:22px;border-radius:50%;border:2px solid #fff;background:var(--owner-color,#fff);z-index:9;overflow:hidden;padding:0;display:grid;place-items:center;box-shadow:0 1px 5px #0006}
+#game .owner-badge.owner-badge-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.tile-building-marker{position:absolute;left:3px;bottom:16px;z-index:8;height:28px;min-width:20px;display:flex;align-items:flex-end;gap:1px;pointer-events:none;filter:drop-shadow(0 1px 2px #0007)}
+.tile-building-marker img{display:block;object-fit:contain;object-position:center bottom}
+.tile-building-marker .building-house{height:13px;width:auto;max-width:22px}
+.tile-building-marker .building-hotel{height:26px;width:auto;max-width:20px}
+.tile-building-marker .building-count{font:800 9px/1 sans-serif;color:#fff;background:#2f263bcc;border:1px solid #fff;border-radius:999px;padding:2px 3px;margin:0 0 1px -3px;text-shadow:0 1px 1px #000}
+.tile-mortgage-badge{position:absolute;left:3px;bottom:3px;z-index:8;min-width:18px;height:18px;padding:0 4px;display:grid;place-items:center;border-radius:6px;background:#43414f;color:#fff;border:1px solid #fff;font:800 9px/1 sans-serif;box-shadow:0 1px 4px #0005}
+
+.owned-properties-panel{border-top:1px solid #eee7f3;margin-top:12px;padding-top:10px}
+.owned-properties-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+#game .owned-properties-head h3{margin:0;font-size:15px;color:#37283f}
+#ownedPropertiesCount{min-width:22px;height:22px;padding:0 6px;display:grid;place-items:center;border-radius:999px;background:#f0e7f8;color:#6f4c86;font:800 11px/1 sans-serif}
+.owned-properties-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:start}
+.owned-property-card{min-width:0;padding:5px;border:1px solid #e6dfeb;border-radius:10px;background:#fff;color:#2d2634;display:flex;flex-direction:column;gap:4px;text-align:left;box-shadow:none;transition:transform .12s ease,border-color .12s ease,box-shadow .12s ease}
+.owned-property-card:hover{transform:translateY(-1px);border-color:#cdb7dd;box-shadow:0 4px 10px #49365a14}
+.owned-property-art{position:relative;width:100%;aspect-ratio:3/2;border-radius:7px;overflow:hidden;background:#eeeaf4}
+.owned-property-art canvas{display:block;width:100%;height:100%}
+.owned-property-title{font-size:10px;line-height:1.15;font-weight:800;display:block;min-height:23px;overflow:hidden;text-overflow:ellipsis}
+.property-building-marker{position:absolute;left:3px;bottom:3px;z-index:4;height:30px;display:flex;align-items:flex-end;pointer-events:none;filter:drop-shadow(0 1px 2px #0007)}
+.property-building-marker img{display:block;object-fit:contain;object-position:center bottom}
+.property-building-marker .building-house{height:14px;width:auto;max-width:23px}
+.property-building-marker .building-hotel{height:28px;width:auto;max-width:20px}
+.property-building-marker .building-count{font:800 9px/1 sans-serif;color:#fff;background:#2f263bcc;border:1px solid #fff;border-radius:999px;padding:2px 3px;margin:0 0 1px -3px;text-shadow:0 1px 1px #000}
+.property-mortgage-mini{position:absolute;left:4px;bottom:4px;z-index:5;background:#3f3b48;color:#fff;border:1px solid #fff;border-radius:5px;padding:2px 4px;font:800 9px/1 sans-serif}
+.owned-properties-empty{grid-column:1/-1;margin:2px 0 8px!important;color:#7a6f80;font-size:12px!important}
+@media(max-width:1100px){.owned-properties-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:650px){.owned-properties-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
