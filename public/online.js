@@ -2,7 +2,7 @@
 const $=id=>document.getElementById(id),Model=KaoruBoard,colors=['#258adb','#d95582','#42a464','#e5ad27'];
 const JAIL_FINE=150,RENT_MULTIPLIER=3;
 const BOARD_DISPLAY_NAME='FUNKIPAPUPOLIO';
-let me=null,current=null,board=null,stream=null,busy=false,visualBusy=false,centerLocked=false,centerLockText='',centerSequence=0,selected=null,profileDraft={},lastMovement=0,lastEvent='',lastHistoryText='',animationGeneration=0,audio=null,sound=false,clickBuffer=null,clickDataPromise=fetch('/effects/click-soft.wav').then(r=>r.arrayBuffer()).catch(()=>null),seenCash={},connected=false,autoEndTimer=null,diceTimer=null,historyFadeTimer=null,bankFxTimer=null,fabOpen=false,diceSettlePromise=null,visualQueue=Promise.resolve(),movementDone=Promise.resolve(),visualPlayerState=new Map();const seenVisuals=new Set(),seenBankFx=new Set(),seenMoves=new Set();
+let me=null,current=null,board=null,stream=null,busy=false,visualBusy=false,centerLocked=false,centerLockText='',centerSequence=0,selected=null,profileDraft={},lastMovement=0,lastEvent='',lastHistoryText='',animationGeneration=0,audio=null,sound=false,clickBuffer=null,walkFx=null,clickDataPromise=fetch('/effects/click-soft.wav').then(r=>r.arrayBuffer()).catch(()=>null),seenCash={},connected=false,autoEndTimer=null,diceTimer=null,historyFadeTimer=null,bankFxTimer=null,fabOpen=false,diceSettlePromise=null,visualQueue=Promise.resolve(),movementDone=Promise.resolve(),visualPlayerState=new Map();const seenVisuals=new Set(),seenBankFx=new Set(),seenMoves=new Set();
 const node=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n};
 function notify(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(notify.timer);notify.timer=setTimeout(()=>$('toast').classList.remove('show'),5000)}
 async function api(path,data){const response=await fetch(path,{method:data===undefined?'GET':'POST',credentials:'same-origin',headers:data===undefined?{}:{'Content-Type':'application/json'},body:data===undefined?undefined:JSON.stringify(data)});let value;try{value=await response.json()}catch{throw new Error('El servidor no respondió. Intenta de nuevo.')}if(!response.ok){if(response.status===401&&me){me=null;stream?.close();show('auth')}throw new Error(value.error||'No se pudo completar la acción.')}return value}
@@ -29,7 +29,7 @@ function settleStationaryRoll(value){if(diceSettlePromise)return diceSettlePromi
 const imagePromises=new Map();
 function preloadImage(src){if(!src)return Promise.resolve();if(imagePromises.has(src))return imagePromises.get(src);const task=new Promise(resolve=>{const im=new Image();im.decoding='async';im.onload=()=>{if(typeof im.decode==='function')im.decode().catch(()=>{}).finally(resolve);else resolve()};im.onerror=resolve;im.src=src;if(im.complete&&im.naturalWidth)resolve()});imagePromises.set(src,task);return task}
 function warmBoardImages(value){const sources=[];for(const street of value?.streets||[])if(street?.image)sources.push(street.image);for(const art of Object.values(value?.specialArtwork||{}))if(art?.image)sources.push(art.image);for(const deck of ['chance','community'])for(const card of value?.cards?.[deck]||[])if(card?.image)sources.push(card.image);for(const card of Object.values(value?.specialCards||{}))if(card?.image)sources.push(card.image);return Promise.allSettled([...new Set(sources)].map(preloadImage)).catch(()=>[])}
-const staticFx=['/effects/darwin-roll.webp','/effects/darwin-idle.webp','/effects/bank-give.webp','/effects/bank-take.webp'];staticFx.forEach(preloadImage);
+const staticFx=['/effects/darwin-roll.webp','/effects/darwin-idle.webp','/effects/bank-give.webp','/effects/bank-take.webp'];staticFx.forEach(preloadImage);setTimeout(()=>{try{ensureWalkFx()}catch{}},0);
 let roomLoadTimer=null;
 function warmCenterVideo(){const video=$('centerVideo');if(!video)return Promise.resolve();if(video.readyState>=3)return Promise.resolve();video.load();return new Promise(resolve=>{let done=false;const finish=()=>{if(done)return;done=true;video.removeEventListener('canplay',finish);video.removeEventListener('error',finish);resolve()};video.addEventListener('canplay',finish,{once:true});video.addEventListener('error',finish,{once:true});setTimeout(finish,3500)})}
 function roomLoadAverage(){try{return Math.max(2200,Math.min(8500,Number(localStorage.getItem('kaoru-room-load-ms'))||4200))}catch{return 4200}}
@@ -41,42 +41,134 @@ function moneyReason(reason=''){const raw=String(reason||'').trim();if(!raw)retu
 function moneyCopy(effect){const from=effect.from,to=effect.to,amount=money(effect.amount),reason=moneyReason(effect.reason);if(from==='bank'&&to)return {text:`${name(to)} recibió ${amount} del banco${effect.source==='go'?' por pasar GO':reason}`,tone:'positive',cat:'give'};if(from==='pot'&&to)return {text:`${name(to)} recibió ${amount} del bote${reason}`,tone:'positive',cat:'give'};if(to==='bank'&&from)return {text:`${name(from)} pagó ${amount} al banco${reason}`,tone:'negative',cat:'take'};if(to==='pot'&&from)return {text:`${name(from)} pagó ${amount} al bote${reason}`,tone:'negative',cat:'take'};if(from&&to)return {text:`${name(from)} pagó ${amount} a ${name(to)}${reason}`,tone:'negative',cat:null};if(effect.direction==='give')return {text:`${name(effect.player)} recibió ${amount}${reason}`,tone:'positive',cat:'give'};return {text:`${name(effect.player)} perdió ${amount}${reason}`,tone:'negative',cat:'take'}}
 async function showBankFx(effect){const box=$('bankFx');if(!box||!effect)return;const copy=moneyCopy(effect);box.replaceChildren();box.classList.toggle('money-only',!copy.cat);if(copy.cat){const src=copy.cat==='give'?'/effects/bank-give.webp':'/effects/bank-take.webp';await preloadImage(src);const im=node('img');im.src=src;im.alt=copy.cat==='give'?'El banco entrega dinero':'El banco cobra dinero';box.append(im)}const message=node('strong',copy.text,`bank-message ${copy.tone}`);box.append(message);box.classList.remove('show','fade-out');void box.offsetWidth;box.classList.add('show');await wait(copy.cat?2400:2000);box.classList.add('fade-out');await wait(320);box.classList.remove('show','fade-out','money-only');box.replaceChildren()}
 async function renderEvent(event){const el=$('event');if(!el||!event?.text)return;const owner=name(event.player);if(event.image)await preloadImage(event.image);el.innerHTML='<article class="draw-card"><div class="draw-card-image"></div><div class="draw-card-body"><p></p><footer class="draw-card-for"></footer></div></article>';const art=el.querySelector('.draw-card-image');if(event.image){const im=node('img');im.src=event.image;im.alt=`Imagen de la cartilla para ${owner}`;art.append(im);const x=Number.isFinite(Number(event.x))?Math.max(0,Math.min(1,Number(event.x))):.5,y=Number.isFinite(Number(event.y))?Math.max(0,Math.min(1,Number(event.y))):.5,zoom=Number.isFinite(Number(event.zoom))?Math.max(1,Math.min(4,Number(event.zoom))):1;im.style.objectPosition=`${x*100}% ${y*100}%`;im.style.transform=`scale(${zoom})`;im.style.transformOrigin=`${x*100}% ${y*100}%`}else art.append(node('div','✦','draw-card-placeholder'));el.querySelector('.draw-card-body p').textContent=event.text;el.querySelector('.draw-card-for').textContent=`Carta para ${owner}`;el.classList.remove('fade-out','card-reveal');void el.offsetWidth;el.classList.add('show','card-reveal');tone('card');await wait(5200);el.classList.add('fade-out');await wait(360);el.classList.remove('show','fade-out','card-reveal');el.replaceChildren()}
-function queueVisualSequence(events=[],effects=[],moves=[]){const safeEvents=events.filter(e=>!isGoPopup(e));const freshEvents=safeEvents.filter(e=>e&&e.id&&!seenVisuals.has(e.id));const freshEffects=effects.filter(e=>e&&e.id&&!seenBankFx.has(e.id));const freshMoves=moves.filter(e=>e&&e.id&&!seenMoves.has(e.id));freshEvents.forEach(e=>seenVisuals.add(e.id));freshEffects.forEach(e=>seenBankFx.add(e.id));freshMoves.forEach(e=>seenMoves.add(e.id));const timeline=[...freshMoves.map(value=>({kind:'move',value})),...freshEvents.map(value=>({kind:'event',value})),...freshEffects.map(value=>({kind:'bank',value}))].sort((a,b)=>a.value.id-b.value.id);if(!timeline.length)return Promise.resolve();visualQueue=visualQueue.then(async()=>{visualBusy=true;renderActions();try{for(const item of timeline){if(item.kind==='move')await animateVisualMove(item.value);else if(item.kind==='event')await renderEvent(item.value);else await showBankFx(item.value)}}finally{visualBusy=false;renderActions();renderProperty();updateOccupiedTiles()}}).catch(()=>{visualBusy=false;renderActions()});return visualQueue}
+function captureVisualTimeline(events=[],effects=[],moves=[]){
+  const safeEvents=events.filter(e=>!isGoPopup(e));
+  const timeline=[];
+  for(const value of moves){if(value?.id&&!seenMoves.has(value.id)){seenMoves.add(value.id);timeline.push({kind:'move',value})}}
+  for(const value of safeEvents){if(value?.id&&!seenVisuals.has(value.id)){seenVisuals.add(value.id);timeline.push({kind:'event',value})}}
+  for(const value of effects){if(value?.id&&!seenBankFx.has(value.id)){seenBankFx.add(value.id);timeline.push({kind:'bank',value})}}
+  return timeline.sort((a,b)=>Number(a.value.id)-Number(b.value.id));
+}
+function queueVisualSequence(timeline=[]){
+  if(!timeline.length)return Promise.resolve();
+  visualQueue=visualQueue.then(async()=>{
+    visualBusy=true;renderActions();
+    try{
+      for(const item of timeline){
+        if(item.kind==='move')await animateVisualMove(item.value);
+        else if(item.kind==='event')await renderEvent(item.value);
+        else await showBankFx(item.value);
+      }
+    }finally{
+      stopWalkFx();
+      visualBusy=false;
+      renderActions();
+      if(!centerLocked)renderProperty();
+      updateOccupiedTiles();
+    }
+  }).catch(err=>{
+    console.error('Secuencia visual:',err);
+    stopWalkFx();
+    visualBusy=false;
+    renderActions();
+  });
+  return visualQueue;
+}
+function ensureWalkFx(){if(walkFx)return walkFx;walkFx=new Audio('/effects/token-hop-loop.wav');walkFx.preload='auto';walkFx.loop=true;walkFx.volume=.2;try{walkFx.load()}catch{}return walkFx}
+function startWalkFx(){if(!sound)return;try{const fx=ensureWalkFx();fx.pause();fx.currentTime=0;fx.play().catch(()=>{})}catch{}}
+function stopWalkFx(){if(!walkFx)return;try{walkFx.pause();walkFx.currentTime=0}catch{}}
 function tone(kind){if(!sound)return;try{audio||=new(window.AudioContext||window.webkitAudioContext)();audio.resume();const seq=kind==='coin'?[523,659,784]:kind==='card'?[440,660]:[160,210,180];seq.forEach((f,i)=>{const o=audio.createOscillator(),g=audio.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.045,audio.currentTime+i*.09);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+i*.09+.12);o.connect(g);g.connect(audio.destination);o.start(audio.currentTime+i*.09);o.stop(audio.currentTime+i*.09+.13)})}catch{}}
 async function prepareClickFx(){try{audio||=new(window.AudioContext||window.webkitAudioContext)();await audio.resume();if(clickBuffer)return clickBuffer;const data=await clickDataPromise;if(data&&!clickBuffer)clickBuffer=await audio.decodeAudioData(data.slice(0));return clickBuffer}catch{return null}}
 function playClickFx(){if(!sound)return;try{if(!clickBuffer){prepareClickFx();return}const src=audio.createBufferSource(),gain=audio.createGain();src.buffer=clickBuffer;gain.gain.value=.22;src.connect(gain);gain.connect(audio.destination);src.start(0)}catch{}}
 function syncSoundButtons(){$('sound').textContent=`Sonido: ${sound?'encendido':'apagado'}`;$('sound').setAttribute('aria-pressed',sound);$('fabSound').classList.toggle('active',sound);$('fabSound').setAttribute('aria-pressed',String(sound));$('fabSound').setAttribute('aria-label',sound?'Apagar sonido':'Encender sonido')}
-function toggleSound(){sound=!sound;syncSoundButtons();if(sound){prepareClickFx();tone('coin')}}
+function toggleSound(){sound=!sound;syncSoundButtons();if(sound){prepareClickFx();ensureWalkFx();tone('coin')}else stopWalkFx()}
 $('sound').onclick=toggleSound;$('fabSound').onclick=()=>{toggleSound();setFab(false)};$('fabToggle').onclick=e=>{e.stopPropagation();setFab(!fabOpen)};$('fabEditor').onclick=()=>{setFab(false);window.open('/editor/','_blank','noopener')};document.addEventListener('click',e=>{if(fabOpen&&!$('gameFab').contains(e.target))setFab(false)});document.addEventListener('pointerdown',e=>{if(e.target.closest('button,a,[role="button"],summary'))playClickFx()},{capture:true});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&fabOpen)setFab(false)});
 $('authForm').onsubmit=async e=>{e.preventDefault();const b=e.submitter;b.disabled=true;try{const result=await api('/api/'+(b.value==='register'?'register':'login'),{username:$('username').value,password:$('password').value});me=result.user;$('password').value='';await lobby();if(b.value==='register')openProfile()}catch(e){notify(e.message)}finally{b.disabled=false}};
 function setConnection(text){$('connection').textContent=text;$('connectionGame').textContent=text}
 function showTransient(selector,text,duration=3400){const el=$(selector);if(!el)return;if(text===undefined||text===null||text===''){el.textContent='';el.classList.remove('show','fade-out');if(selector==='history'){ $('historyBox')?.classList.remove('show'); }return}if(selector==='event'){el.textContent=text;el.classList.remove('fade-out');void el.offsetWidth;el.classList.add('show');clearTimeout(showTransient.eventTimer);showTransient.eventTimer=setTimeout(()=>{el.classList.add('fade-out');setTimeout(()=>el.classList.remove('show','fade-out'),360)},duration)}else if(selector==='history'){el.replaceChildren(node('li',text));const box=$('historyBox');box.classList.add('show');clearTimeout(historyFadeTimer);historyFadeTimer=setTimeout(()=>box.classList.remove('show'),duration)}}
-async function lobby(){stream?.close();stream=null;current=null;board=null;connected=false;animationGeneration++;centerSequence++;centerLocked=false;centerLockText='';seenVisuals.clear();seenBankFx.clear();seenMoves.clear();visualPlayerState.clear();visualQueue=Promise.resolve();movementDone=Promise.resolve();setConnection('');show('lobby');$('welcome').textContent=`Hola, ${me.name}.`;$('rooms').replaceChildren();try{const data=await api('/api/rooms');const activeRooms=data.rooms.filter(r=>!r.finished).reverse();if(!activeRooms.length)$('rooms').textContent='Todavía no tienes salas activas.';for(const r of activeRooms){const label=r.started?`${r.code} · Volver a la partida`:`${r.code} · Sala de espera`;$('rooms').append(btn(label,()=>enter(r.code).catch(e=>notify(e.message)),false,'room-link'))}}catch(e){notify(e.message)}}
+async function lobby(){stopWalkFx();stream?.close();stream=null;current=null;board=null;connected=false;animationGeneration++;centerSequence++;centerLocked=false;centerLockText='';seenVisuals.clear();seenBankFx.clear();seenMoves.clear();visualPlayerState.clear();visualQueue=Promise.resolve();movementDone=Promise.resolve();setConnection('');show('lobby');$('welcome').textContent=`Hola, ${me.name}.`;$('rooms').replaceChildren();try{const data=await api('/api/rooms');const activeRooms=data.rooms.filter(r=>!r.finished).reverse();if(!activeRooms.length)$('rooms').textContent='Todavía no tienes salas activas.';for(const r of activeRooms){const label=r.started?`${r.code} · Volver a la partida`:`${r.code} · Sala de espera`;$('rooms').append(btn(label,()=>enter(r.code).catch(e=>notify(e.message)),false,'room-link'))}}catch(e){notify(e.message)}}
 async function logout(){try{await api('/api/logout',{});me=null;stream?.close();current=null;board=null;show('auth')}catch(e){notify(e.message)}}
 $('home').onclick=lobby;$('logout').onclick=logout;$('fabRooms').onclick=()=>{setFab(false);lobby()};$('fabLogout').onclick=()=>{setFab(false);logout()};
 $('boardChoice').onchange=()=>$('boardFileLabel').hidden=$('boardChoice').value!=='file';
 $('createForm').onsubmit=async e=>{e.preventDefault();e.submitter.disabled=true;try{let custom;if($('boardChoice').value==='file'){const file=$('boardFile').files[0];if(!file)throw Error('Selecciona el JSON de tu tablero.');if(file.size>65000000)throw Error('El tablero supera 65 MB.');custom=JSON.parse(await file.text());Model.validate(Model.migrate(custom))}const r=await api('/api/rooms',{board:custom,rounds:Number($('rounds').value),pot:$('pot').checked});await enter(r.code)}catch(e){notify(e.message)}finally{e.submitter.disabled=false}};
 $('joinForm').onsubmit=async e=>{e.preventDefault();try{const code=$('joinCode').value.trim().toUpperCase();await api(`/api/rooms/${code}/join`,{});await enter(code)}catch(e){notify(e.message)}};
-async function enter(code){const loading=beginRoomLoading(code);try{stream?.close();stream=null;board=null;selected=null;lastMovement=0;lastEvent='';lastHistoryText='';seenCash={};seenVisuals.clear();seenBankFx.clear();seenMoves.clear();visualPlayerState.clear();visualQueue=Promise.resolve();movementDone=Promise.resolve();centerSequence++;centerLocked=false;centerLockText='';animationGeneration++;setRoomLoadStage('Cargando estado de la partida…',20);current=await api(`/api/rooms/${code}`);const entered=current;setRoomLoadStage('Cargando tablero y cartillas…',38);board=await api(`/api/rooms/${code}/board`);if(current!==entered){cancelRoomLoading();return}setRoomLoadStage('Preparando imágenes y fondo…',56);await Promise.race([Promise.all([warmBoardImages(board),warmCenterVideo()]),wait(6500)]);setRoomLoadStage('Dibujando el tablero…',78);drawBoard();render(current,true);setRoomLoadStage('Conectando el tiempo real…',90);setConnection('Conectando…');connected=false;stream=new EventSource(`/api/rooms/${code}/events`);stream.onopen=()=>{connected=true;setConnection('● En directo');renderActions()};stream.onmessage=async e=>{try{const next=JSON.parse(e.data);if(current?.code===next.code&&next.revision>=current.revision){if(!current?.state&&next.state){board=await api(`/api/rooms/${next.code}/board`);await warmBoardImages(board);drawBoard()}render(next)}}catch{notify('No se pudo leer una actualización. Recarga para reconectar.')}};stream.onerror=()=>{connected=false;setConnection('Reconectando…');renderActions()};finishRoomLoading(loading)}catch(error){cancelRoomLoading();throw error}}
+async function enter(code){stopWalkFx();const loading=beginRoomLoading(code);try{stream?.close();stream=null;board=null;selected=null;lastMovement=0;lastEvent='';lastHistoryText='';seenCash={};seenVisuals.clear();seenBankFx.clear();seenMoves.clear();visualPlayerState.clear();visualQueue=Promise.resolve();movementDone=Promise.resolve();centerSequence++;centerLocked=false;centerLockText='';animationGeneration++;setRoomLoadStage('Cargando estado de la partida…',20);current=await api(`/api/rooms/${code}`);const entered=current;setRoomLoadStage('Cargando tablero y cartillas…',38);board=await api(`/api/rooms/${code}/board`);if(current!==entered){cancelRoomLoading();return}setRoomLoadStage('Preparando imágenes y fondo…',56);await Promise.race([Promise.all([warmBoardImages(board),warmCenterVideo()]),wait(6500)]);setRoomLoadStage('Dibujando el tablero…',78);drawBoard();render(current,true);setRoomLoadStage('Conectando el tiempo real…',90);setConnection('Conectando…');connected=false;stream=new EventSource(`/api/rooms/${code}/events`);stream.onopen=()=>{connected=true;setConnection('● En directo');renderActions()};stream.onmessage=async e=>{try{const next=JSON.parse(e.data);if(current?.code===next.code&&next.revision>=current.revision){if(!current?.state&&next.state){board=await api(`/api/rooms/${next.code}/board`);await warmBoardImages(board);drawBoard()}render(next)}}catch{notify('No se pudo leer una actualización. Recarga para reconectar.')}};stream.onerror=()=>{connected=false;setConnection('Reconectando…');renderActions()};finishRoomLoading(loading)}catch(error){cancelRoomLoading();throw error}}
 $('copyCode').onclick=async()=>{try{await navigator.clipboard.writeText(current.code);notify('Código copiado.')}catch{notify('Código: '+current.code)}};
 async function roomCommand(op,data={}){try{const r=await api(`/api/rooms/${current.code}/${op}`,data);if(op==='start'){board=await api(`/api/rooms/${current.code}/board`);drawBoard()}render(r)}catch(e){notify(e.message)}}
 $('ready').onclick=()=>roomCommand('ready',{ready:!current.members.find(m=>m.id===me.id).ready});$('start').onclick=()=>roomCommand('start');
 async function action(type,extra={}){if(busy||!connected)return;busy=true;renderActions();if(type==='roll'){startDiceRoll();tone('dice')}try{const r=await api(`/api/rooms/${current.code}/action`,{revision:current.revision,actionId:crypto.randomUUID(),action:{type,...extra}});if(current?.code===r.code&&r.revision>=current.revision)render(r)}catch(e){if(type==='roll'){clearInterval(diceTimer);diceTimer=null;diceSettlePromise=null;showIdleDice()}notify(e.message);try{render(await api(`/api/rooms/${current.code}`))}catch{}}finally{busy=false;renderActions();renderProperty()}}
 function playerCard(m,i,game,compact=false){const p=game?.players.find(p=>p.id===m.id),el=node('div',undefined,'player');el.style.setProperty('--player-color',colors[i]);el.classList.toggle('current',!!game&&game.players[game.turn]?.id===m.id);el.classList.toggle('out',!!p?.out);if(compact)el.classList.add('compact-player');el.append(avatar(m));const text=node('div',undefined,'player-text');text.append(node('strong',m.name+(m.id===me.id?' · tú':'')));if(p){text.append(node('span',money(p.cash),'cash'));if(!compact){text.append(node('small',`Patrimonio ${money(p.netWorth)}${p.out?' · fuera':p.jail?' · en prisión':''}`));if(p.pass||p.discount)text.append(node('small',[p.pass?`${p.pass} salida de cárcel`:'',p.discount?`${p.discount} cupón de alquiler`:''].filter(Boolean).join(' · ')))}seenCash[m.id]=p.cash}else text.append(node('small',m.ready?'✓ Lista':'Preparando su ficha…'));el.append(text);return el}
 function render(r,initial=false){
-if(!initial&&current?.code===r.code&&r.revision<=current.revision)return;
-const previous=current;current=r;const g=r.state;
-if(!g){show('waiting');$('roomCode').textContent=r.code;$('waitingPlayers').replaceChildren(...r.members.map((m,i)=>playerCard(m,i)));$('roomSettings').textContent=`${r.settings.rounds?r.settings.rounds+' rondas':'Hasta que quede 1 jugador@'} · ${r.settings.pot?'Bote activado':'Sin bote'}`;$('ready').textContent=r.members.find(m=>m.id===me.id).ready?'Ya estoy list@ ✓':'Estoy list@';$('start').hidden=r.host!==me.id;$('start').disabled=r.members.length<2||!r.members.every(m=>m.ready);return}
-show('game');$('gameTitle').textContent='';$('boardTitle').textContent=BOARD_DISPLAY_NAME;$('players').replaceChildren(...r.members.map((m,i)=>playerCard(m,i,g,true)));
-const eventsRaw=Array.isArray(g.visualEvents)?g.visualEvents:(g.event?[g.event]:[]),events=eventsRaw.filter(e=>!isGoPopup(e)),bankFx=Array.isArray(g.bankFx)?g.bankFx:[],moves=Array.isArray(g.visualMoves)&&g.visualMoves.length?g.visualMoves:(g.movement?[g.movement]:[]);
-if(initial){events.forEach(e=>e?.id&&seenVisuals.add(e.id));bankFx.forEach(e=>e?.id&&seenBankFx.add(e.id));moves.forEach(e=>e?.id&&seenMoves.add(e.id));renderTokenSnapshot(g.players)}
-const freshEvents=initial?[]:events.filter(e=>e?.id&&!seenVisuals.has(e.id)),freshFx=initial?[]:bankFx.filter(e=>e?.id&&!seenBankFx.has(e.id)),freshMoves=initial?[]:moves.filter(e=>e?.id&&!seenMoves.has(e.id));
-const hasFreshVisual=!!(freshEvents.length||freshFx.length||freshMoves.length),stationaryRoll=!!(!initial&&previous?.state&&diceTimer&&!freshMoves.length&&r.revision>previous.revision&&previous.state.phase==='roll'&&g.dice?.[0]);
-let sequenceToken=null;if(hasFreshVisual||stationaryRoll){if(!visualBusy&&!centerLocked&&previous?.state)renderTokenSnapshot(previous.state.players);sequenceToken=++centerSequence;centerLocked=true;centerLockText=freshMoves.length?`Resolviendo el movimiento de ${name(freshMoves[0].player)}…`:stationaryRoll?'Terminando la tirada…':'Resolviendo la jugada…';$('turnLabel').textContent=centerLockText;showTransient('history','',0)}else if(!centerLocked){$('turnLabel').textContent=turnText(g);if(!visualBusy)renderTokenSnapshot(g.players)}
-$('roundLabel').textContent=`Ronda ${Math.min(g.round,g.maxRounds||g.round)}${g.maxRounds?' de '+g.maxRounds:''}`;$('potLabel').textContent=g.potEnabled?`Bote · ${money(g.pot)}`:'';
-const latestLog=g.log[g.log.length-1]||'';if(latestLog&&latestLog!==lastHistoryText){lastHistoryText=latestLog;if(!hasFreshVisual&&!centerLocked)showTransient('history',latestLog,3200)}
-updateOwnership();updateOccupiedTiles();renderTrades();renderActions();renderProperty();
-const sequenceDone=stationaryRoll?settleStationaryRoll(g.dice?.[0]||1):queueVisualSequence(events,bankFx,moves);if(sequenceToken!==null)Promise.resolve(sequenceDone).finally(()=>releaseCenterLock(sequenceToken))
+  if(!initial&&current?.code===r.code&&r.revision<=current.revision)return;
+  const previous=current;
+  current=r;
+  const g=r.state;
+  if(!g){
+    show('waiting');
+    $('roomCode').textContent=r.code;
+    $('waitingPlayers').replaceChildren(...r.members.map((m,i)=>playerCard(m,i)));
+    $('roomSettings').textContent=`${r.settings.rounds?r.settings.rounds+' rondas':'Hasta que quede 1 jugador@'} · ${r.settings.pot?'Bote activado':'Sin bote'}`;
+    $('ready').textContent=r.members.find(m=>m.id===me.id).ready?'Ya estoy list@ ✓':'Estoy list@';
+    $('start').hidden=r.host!==me.id;
+    $('start').disabled=r.members.length<2||!r.members.every(m=>m.ready);
+    return;
+  }
+  show('game');
+  $('gameTitle').textContent='';
+  $('boardTitle').textContent=BOARD_DISPLAY_NAME;
+  $('players').replaceChildren(...r.members.map((m,i)=>playerCard(m,i,g,true)));
+
+  const eventsRaw=Array.isArray(g.visualEvents)?g.visualEvents:(g.event?[g.event]:[]);
+  const events=eventsRaw.filter(e=>!isGoPopup(e));
+  const bankFx=Array.isArray(g.bankFx)?g.bankFx:[];
+  const moves=Array.isArray(g.visualMoves)&&g.visualMoves.length?g.visualMoves:(g.movement?[g.movement]:[]);
+
+  if(initial){
+    events.forEach(e=>e?.id&&seenVisuals.add(e.id));
+    bankFx.forEach(e=>e?.id&&seenBankFx.add(e.id));
+    moves.forEach(e=>e?.id&&seenMoves.add(e.id));
+    renderTokenSnapshot(g.players);
+  }
+
+  const timeline=initial?[]:captureVisualTimeline(events,bankFx,moves);
+  const stationaryRoll=!!(!initial&&previous?.state&&diceTimer&&!timeline.some(x=>x.kind==='move')&&r.revision>previous.revision&&previous.state.phase==='roll'&&g.dice?.[0]);
+  const hasSequence=timeline.length>0||stationaryRoll;
+  let sequenceToken=null;
+
+  if(hasSequence){
+    if(!visualBusy&&!centerLocked){
+      if(previous?.state)renderTokenSnapshot(previous.state.players);
+      else renderTokenSnapshot(g.players);
+    }
+    sequenceToken=++centerSequence;
+    centerLocked=true;
+    const firstMove=timeline.find(x=>x.kind==='move')?.value;
+    centerLockText=firstMove?`Moviendo a ${name(firstMove.player)}…`:stationaryRoll?'Terminando la tirada…':'Resolviendo la jugada…';
+    $('turnLabel').textContent=centerLockText;
+    showTransient('history','',0);
+    // Nada de compra, propiedad o cartilla final antes de que termine la secuencia visual.
+    $('actions').replaceChildren(node('p',centerLockText,'center-sequence-status'));
+  }else if(!centerLocked){
+    $('turnLabel').textContent=turnText(g);
+    if(!visualBusy)renderTokenSnapshot(g.players);
+  }
+
+  $('roundLabel').textContent=`Ronda ${Math.min(g.round,g.maxRounds||g.round)}${g.maxRounds?' de '+g.maxRounds:''}`;
+  $('potLabel').textContent=g.potEnabled?`Bote · ${money(g.pot)}`:'';
+  const latestLog=g.log[g.log.length-1]||'';
+  if(latestLog&&latestLog!==lastHistoryText){
+    lastHistoryText=latestLog;
+    if(!hasSequence&&!centerLocked)showTransient('history',latestLog,3200);
+  }
+
+  updateOwnership();
+  updateOccupiedTiles();
+  renderTrades();
+  renderActions();
+  if(!centerLocked&&!visualBusy)renderProperty();
+
+  const sequenceDone=stationaryRoll?settleStationaryRoll(g.dice?.[0]||1):queueVisualSequence(timeline);
+  if(sequenceToken!==null)Promise.resolve(sequenceDone).finally(()=>releaseCenterLock(sequenceToken));
 }
 function drawBoard(){for(const el of document.querySelectorAll('#board > .tile'))el.remove();for(const t of Model.tiles()){const el=node('button',undefined,'tile');el.type='button';el.dataset.pos=t.position;const [row,col]=Model.coords(t.position);el.style.gridRow=row;el.style.gridColumn=col;if(t.position%10===0)el.classList.add('corner');const s=t.type==='street'?board.streets[t.street]:null,a=s||board.specialArtwork[t.position];if(!s){el.classList.add('special',t.type);if(t.type==='utility')el.classList.add(t.position===12?'utility-electricity':'utility-water');el.append(node('b',t.symbol),node('span',t.name));if(a.image)el.classList.add('has-image')}const canvas=node('canvas',undefined,'art');canvas.width=400;canvas.height=400;if(a.image){const im=new Image();im.onload=()=>canvas.getContext('2d').drawImage(im,...Model.cropRect(im.width,im.height,400,400,a.zoom,a.x,a.y));im.src=a.image}el.prepend(canvas);if(s){const stripe=node('div',undefined,'stripe');stripe.style.background=s.groupId===7?'#9b5de5':s.color;el.append(stripe,node('span',s.name,'title'),node('span',money(s.price),'cost'))}el.setAttribute('aria-label',(s?.name||t.name)+(s?', '+money(s.price):''));el.onclick=()=>{selected=t.position;renderProperty();document.querySelectorAll('.tile').forEach(n=>n.classList.toggle('selected',Number(n.dataset.pos)===selected))};$('board').append(el)}}
 function tileAsset(pos){const t=Model.tiles()[pos];return t.type==='street'?{...board.streets[t.street],type:'street'}:['transport','utility'].includes(t.type)?{name:t.name,type:t.type,price:t.type==='transport'?200:150}:null}
@@ -87,7 +179,65 @@ function placeJailBars(el){const [row,col]=Model.coords(10);el.style.left=((col-
 function jailBarsNeededVisual(){const active=[...visualPlayerState.entries()].filter(([,p])=>!p.out&&p.pos===10);return {inmates:active.filter(([,p])=>p.jail),visitors:active.filter(([,p])=>!p.jail)}}
 function syncJailOverlayVisual(){const tokens=$('tokens');tokens.querySelector('.jail-bars-overlay')?.remove();const jailTile=document.querySelector('#board > .tile.jail'),barsState=jailBarsNeededVisual();if(jailTile)jailTile.classList.toggle('overlay-active',!!barsState.inmates.length);for(const piece of tokens.querySelectorAll('.piece')){const state=visualPlayerState.get(piece.dataset.player),jailed=!!state&&state.pos===10&&!!state.jail;piece.classList.toggle('piece-jailed',jailed);piece.classList.toggle('piece-free',!jailed)}if(!barsState.inmates.length)return;const bars=node('div',undefined,'jail-bars-overlay');bars.setAttribute('aria-hidden','true');for(let i=0;i<5;i++)bars.append(node('span',undefined,'jail-bar'));bars.append(node('div','🔒','jail-corner-icon'));bars.append(node('div','CÁRCEL/VISITA','jail-strip-label'));placeJailBars(bars);tokens.append(bars)}
 function renderTokenSnapshot(players){if(!current?.members||!players)return;visualPlayerState=new Map(players.map(p=>[p.id,{pos:p.pos,jail:p.jail||0,out:!!p.out}]));const tokens=$('tokens');tokens.replaceChildren();for(const [i,m]of current.members.entries()){const state=visualPlayerState.get(m.id);if(!state||state.out)continue;const piece=token(m,i);piece.className='piece';piece.dataset.player=m.id;place(piece,state.pos,i);tokens.append(piece)}syncJailOverlayVisual()}
-async function animateVisualMove(move){const piece=$('tokens').querySelector(`[data-player="${move.player}"]`);if(!piece)return;const index=current.members.findIndex(m=>m.id===move.player),state=visualPlayerState.get(move.player)||{pos:move.from,jail:0,out:false};state.pos=move.from;if(move.jail===0)state.jail=0;visualPlayerState.set(move.player,state);place(piece,move.from,index);syncJailOverlayVisual();updateOccupiedTiles();if(diceTimer){await stopDiceRoll(current?.state?.dice?.[0]||1);await wait(900)}await wait(move.source==='card'?350:700);if(move.teleport){piece.style.transition='left .7s ease,top .7s ease,transform .24s ease';piece.classList.add('hopping');place(piece,move.to,index);await wait(760);piece.style.removeProperty('transition')}else{const steps=Math.min(Math.abs(Number(move.steps)||0),40),direction=Math.sign(Number(move.steps)||0),delay=move.source==='card'?(steps>12?180:260):420;for(let step=1;step<=steps;step++){const pos=(move.from+direction*step+80)%40;place(piece,pos,index);hopStep(piece,pos,index);state.pos=pos;updateOccupiedTiles();await wait(delay)}}state.pos=move.to;state.jail=Number(move.jail)||0;visualPlayerState.set(move.player,state);place(piece,move.to,index);piece.classList.remove('hopping');document.querySelectorAll('#board > .tile.token-step').forEach(el=>el.classList.remove('token-step'));syncJailOverlayVisual();updateOccupiedTiles();if(!diceTimer)showIdleDice()}
+async function animateVisualMove(move){
+  const piece=$('tokens').querySelector(`[data-player="${move.player}"]`);
+  if(!piece)return;
+  const index=current.members.findIndex(m=>m.id===move.player);
+  const state=visualPlayerState.get(move.player)||{pos:move.from,jail:0,out:false};
+
+  // Antes de cada movimiento la ficha visual permanece exactamente en el origen.
+  state.pos=Number(move.from);
+  if(move.source==='roll'||Number(move.jail)===0)state.jail=0;
+  visualPlayerState.set(move.player,state);
+  place(piece,state.pos,index);
+  syncJailOverlayVisual();
+  updateOccupiedTiles();
+
+  if(move.source==='roll'){
+    if(diceTimer)await stopDiceRoll(current?.state?.dice?.[0]||1);
+    else showDie(current?.state?.dice?.[0]||1);
+    await wait(1150);
+  }else{
+    // La cartilla ya se mostró antes de llegar aquí; deja una pausa para que el traslado se entienda.
+    await wait(650);
+  }
+
+  if(move.teleport){
+    // Traslado a cárcel: las barras aparecen solamente DESPUÉS de llegar.
+    piece.style.transition='left .75s ease,top .75s ease,transform .32s ease';
+    piece.classList.add('hopping');
+    place(piece,Number(move.to),index);
+    await wait(820);
+    piece.style.removeProperty('transition');
+  }else{
+    const steps=Math.min(Math.abs(Number(move.steps)||0),40);
+    const direction=Math.sign(Number(move.steps)||0);
+    const delay=move.source==='card'?(steps>12?230:300):430;
+    if(steps)startWalkFx();
+    try{
+      for(let step=1;step<=steps;step++){
+        const pos=(Number(move.from)+direction*step+80)%40;
+        place(piece,pos,index);
+        hopStep(piece,pos,index);
+        state.pos=pos;
+        visualPlayerState.set(move.player,state);
+        updateOccupiedTiles();
+        await wait(delay);
+      }
+    }finally{stopWalkFx()}
+  }
+
+  state.pos=Number(move.to);
+  state.jail=Number(move.jail)||0;
+  visualPlayerState.set(move.player,state);
+  place(piece,state.pos,index);
+  piece.classList.remove('hopping');
+  document.querySelectorAll('#board > .tile.token-step').forEach(el=>el.classList.remove('token-step'));
+  syncJailOverlayVisual();
+  updateOccupiedTiles();
+  await wait(250);
+  if(!diceTimer)showIdleDice();
+}
 function renderActions(){if(!current?.state)return;const g=current.state,p=g.players.find(p=>p.id===me.id),turn=g.players[g.turn].id===me.id,disabled=busy||visualBusy||centerLocked||!connected;const a=$('actions'),urgent=$('urgent');a.replaceChildren();urgent.replaceChildren();$('resign').disabled=p.out||g.phase==='finished'||disabled;if(centerLocked){a.append(node('p',centerLockText||'Resolviendo la jugada…','center-sequence-status'));if(autoEndTimer){clearTimeout(autoEndTimer);autoEndTimer=null}return}if(g.phase!=='end'&&autoEndTimer){clearTimeout(autoEndTimer);autoEndTimer=null}if(g.phase==='finished'){a.append(btn('Volver a mis salas',lobby));return}if(p.out){a.append(node('p','Estás mirando la partida.'));return}if(g.phase==='debt'){for(const d of g.debts)urgent.append(node('p',`${name(d.from)} debe ${money(d.amount)} ${d.to==='bank'?'al banco':d.to==='pot'?'al bote':'a '+name(d.to)}.`));if(g.debts.some(d=>d.from===me.id)){urgent.append(node('p','Selecciona tus propiedades: vende mejoras o hipoteca para pagar.'),btn('Declarar bancarrota',()=>action('bankrupt'),disabled,'danger'))}return}if(g.phase==='auction'){const x=g.auction;urgent.append(node('h3','Subasta anterior · '+tileAsset(x.pos).name),node('p',x.bidder?`${name(x.bidder)} ofrece ${money(x.bid)}`:'Aún no hay ofertas.'));const time=node('p');time.id='auctionClock';urgent.append(time);const label=node('label','Tu oferta');const input=node('input');input.type='number';input.min=x.bid+10;input.step=10;input.value=x.bid+10;input.max=p.cash;label.append(input);urgent.append(label,btn('Ofertar',()=>action('bid',{amount:Number(input.value)}),disabled||x.passed.includes(me.id)||p.cash<x.bid+10),btn('Paso',()=>action('passAuction'),disabled||x.passed.includes(me.id)||x.bidder===me.id));return}if(g.phase==='trade'){const t=g.trade;urgent.append(node('p',`${name(t.from)} ofrece ${tileAsset(t.give).name} a ${name(t.to)} por ${tileAsset(t.receive).name}.`));if(t.to===me.id)urgent.append(btn('Aceptar',()=>action('acceptTrade'),disabled));if([t.from,t.to].includes(me.id))urgent.append(btn(t.from===me.id?'Cancelar':'Rechazar',()=>action('cancelTrade'),disabled));return}if(!turn){a.append(node('p',`Espera a ${name(g.players[g.turn].id)}.`,'wait-turn-message'));return}if(g.phase==='roll'){if(p.jail){a.append(node('p',`En prisión · quedan ${p.jail} intentos. Para salir gratis necesitas sacar 6.`),btn(`Pagar ${money(JAIL_FINE)} y salir`,()=>action('release',{method:'pay'}),disabled||p.cash<JAIL_FINE));if(p.pass)a.append(btn('Usar carta para salir',()=>action('release',{method:'card'}),disabled))}a.append(btn(p.jail?'Intentar sacar 6':'Tirar dado',()=>action('roll'),disabled,'primary'))}if(g.phase==='buy'){const asset=tileAsset(g.pending),offer=node('div',undefined,'landing-offer'),nameEl=node('strong',asset.name,'landing-name'),controls=node('div',undefined,'landing-buy-actions');offer.append(nameEl);controls.append(btn(`Comprar por ${money(asset.price)}`,()=>action('buy'),disabled||p.cash<asset.price,'primary'),btn('Pasar',()=>action('passBuy'),disabled));a.append(offer,controls)}if(g.phase==='end'){a.append(node('p','Turno completado. Pasando automáticamente…'));if(!autoEndTimer&&!disabled){const movementDelay=Math.min(8200,Math.max(2500,Math.abs(g.movement?.steps||0)*420+2500));autoEndTimer=setTimeout(()=>{autoEndTimer=null;if(current?.state?.phase==='end'&&current.state.players[current.state.turn]?.id===me.id&&!busy&&connected)action('end')},movementDelay)}}}
 setInterval(()=>{if($('auctionClock')&&current?.state?.auction)$('auctionClock').textContent=`Cierra en ${Math.max(0,Math.ceil((current.state.auction.until-Date.now())/1000))} segundos.`},500);
 function renderProperty(){if(!current?.state||selected===null)return;const wrap=$('property'),t=Model.tiles()[selected],a=tileAsset(selected),g=current.state,o=g.owners[selected];wrap.replaceChildren(node('h2',a?.name||t.name));if(!a){let description=t.description;if(t.type==='parking'&&g.potEnabled)description='Si caes aquí, cobras el bote acumulado de impuestos y multas indicadas.';wrap.append(node('p',description));return}wrap.append(node('p',`Precio ${money(a.price)} · ${o?name(o.id)+(o.mortgaged?' · hipotecada':''):'Disponible'}`));if(a.type==='street'){const group=board.streets.filter(s=>s.groupId===a.groupId).map(s=>s.name).join(' · ');wrap.append(node('p','Grupo: '+group,'hint'));const rents=node('div',undefined,'rent-list');[['Sin grupo',a.rent*RENT_MULTIPLIER],['Grupo completo',a.groupRent*RENT_MULTIPLIER],...a.upgradeRents.map((n,i)=>[i===4?'Hotel':`${i+1} casa${i?'s':''}`,n*RENT_MULTIPLIER])].forEach(([label,value])=>rents.append(node('p',`${label}: ${money(value)}`)));wrap.append(rents)}else if(a.type==='transport'){wrap.append(node('p',t.description));const rents=node('div',undefined,'rent-list');[75,150,300,600].forEach((value,i)=>rents.append(node('p',`${i+1} estación${i?'es':''}: ${money(value)}`)));wrap.append(rents)}else{wrap.append(node('p',t.description),node('p','Alquiler: dado × 20 con una utilidad · dado × 50 con las dos.','rent-list'))}if(o?.id===me.id){const controls=node('div',undefined,'property-actions'),disabled=busy||visualBusy||centerLocked||!connected||!['roll','end','debt'].includes(g.phase);if(a.type==='street'){controls.append(node('p',o.level===5?'Tienes un hotel.':`Tienes ${o.level} casas.`),btn('Construir · '+money(a.buildCost),()=>action('build',{position:selected}),disabled||o.level===5),btn('Vender mejora · '+money(Math.floor(a.buildCost/2)),()=>action('sellBuilding',{position:selected}),disabled||!o.level))}controls.append(o.mortgaged?btn('Levantar hipoteca · '+money(Math.ceil(Math.floor(a.price/2)*1.1)),()=>action('unmortgage',{position:selected}),disabled):btn('Hipotecar · recibes '+money(Math.floor(a.price/2)),()=>action('mortgage',{position:selected}),disabled));wrap.append(controls)}}
