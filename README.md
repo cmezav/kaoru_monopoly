@@ -170,3 +170,12 @@ Al pulsar Guardar en el Editor, el tablero y las cartillas se guardan en la cuen
 - Si el navegador (especialmente iPhone Safari) no permite bloquear la orientación, aparece una pantalla clara para girar el teléfono; solo bloquea la partida, no login ni lobby.
 - En horizontal el tablero se redimensiona al alto real del teléfono, la columna derecha queda visible y desplazable, y chat/menú mantienen controles táctiles compactos.
 - Se añadió un `manifest.webmanifest` con orientación `landscape`, útil cuando el juego se instala como web app/PWA.
+
+
+## Ajustes v1.7.16
+
+- El menú flotante de la partida incluye **⛶ Pantalla completa** para laptop/desktop.
+- El modo usa la Fullscreen API del navegador: **Escape** vuelve inmediatamente a la vista normal del navegador.
+- La vista normal de laptop no cambia; las reglas de tamaño extra solo se aplican mientras el navegador está realmente en pantalla completa.
+- En pantalla completa el tablero ocupa casi todo el alto físico disponible y las calles, precios e imágenes ganan tamaño para leerse mejor; el panel lateral conserva jugadores, detalles y propiedades con scroll propio.
+- El botón se oculta en dispositivos táctiles, que siguen usando el modo móvil horizontal de v1.7.15.

@@ -927,3 +927,65 @@ body:not(.game-active){background:linear-gradient(180deg,#faf8fd 0%,#f3eef9 100%
 @media (hover:none) and (pointer:coarse) and (orientation:portrait){
   body.game-active .mobile-landscape-gate:not([hidden]){display:grid!important}
 }
+
+
+/* v1.7.16 — pantalla completa voluntaria para laptop/desktop. El modo navegador normal no cambia. */
+.fullscreen-game-control{
+  position:relative!important;
+  width:100%!important;
+  min-height:34px!important;
+  margin:9px 0 0!important;
+  padding:7px 10px!important;
+  border-radius:10px!important;
+  border:1px solid #cda5df!important;
+  background:linear-gradient(135deg,#f6eaff,#ffeaf7)!important;
+  color:#5b3970!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  box-shadow:none!important;
+}
+.fullscreen-game-control:hover{background:linear-gradient(135deg,#efd9ff,#ffdbf1)!important}
+.fullscreen-game-control[aria-pressed="true"]{background:#efe4f6!important;color:#553267!important}
+
+/* Al entrar a Fullscreen API, el tablero usa casi todo el alto físico de la pantalla. */
+html:fullscreen,html:-webkit-full-screen{background:#09090d}
+html:fullscreen body.game-active,html:-webkit-full-screen body.game-active{--game-max:none;width:100vw;height:100dvh;min-height:100dvh;overflow:hidden!important;background:#09090d}
+html:fullscreen body.game-active::before,html:fullscreen body.game-active::after,
+html:-webkit-full-screen body.game-active::before,html:-webkit-full-screen body.game-active::after{display:none!important}
+html:fullscreen body.game-active header,html:-webkit-full-screen body.game-active header{display:none!important}
+html:fullscreen body.game-active main,html:-webkit-full-screen body.game-active main{
+  width:100vw!important;height:100dvh!important;max-width:none!important;min-height:100dvh!important;
+  margin:0!important;padding:4px 8px!important;background:#fff!important;overflow:hidden!important;
+}
+html:fullscreen #game,html:-webkit-full-screen #game{height:100%!important;min-height:0!important;overflow:hidden!important}
+html:fullscreen #game .game-top,html:-webkit-full-screen #game .game-top{display:none!important}
+html:fullscreen #game .game-workspace,html:-webkit-full-screen #game .game-workspace{
+  display:grid!important;
+  grid-template-columns:minmax(0,calc(100dvh - 8px)) 290px!important;
+  justify-content:center!important;align-items:stretch!important;
+  gap:9px!important;height:100%!important;margin:0!important;
+}
+html:fullscreen #game .board-panel,html:-webkit-full-screen #game .board-panel{
+  height:100%!important;min-width:0!important;padding:0!important;border:0!important;border-radius:0!important;
+  overflow:hidden!important;background:#fff!important;box-shadow:none!important;
+}
+html:fullscreen #game .board-scroll,html:-webkit-full-screen #game .board-scroll{
+  width:100%!important;height:100%!important;max-width:none!important;padding:0!important;overflow:hidden!important;
+  display:grid!important;place-items:center!important;
+}
+html:fullscreen #game #board,html:-webkit-full-screen #game #board{
+  width:min(100%,calc(100dvh - 8px))!important;height:auto!important;min-width:0!important;max-width:none!important;
+  margin:0!important;padding:3px!important;gap:3px!important;
+}
+html:fullscreen #game .tile .title,html:-webkit-full-screen #game .tile .title{font-size:clamp(10px,.72vw,14px)!important;line-height:1.03!important}
+html:fullscreen #game .tile .cost,html:-webkit-full-screen #game .tile .cost{font-size:clamp(9px,.62vw,12px)!important}
+html:fullscreen #game .tile.special span,html:-webkit-full-screen #game .tile.special span{font-size:clamp(8px,.58vw,11px)!important}
+html:fullscreen #game .game-workspace>aside.game-side,html:-webkit-full-screen #game .game-workspace>aside.game-side{
+  height:100%!important;max-height:none!important;overflow-y:auto!important;padding:10px!important;border-radius:12px!important;
+}
+html:fullscreen #game .owned-properties-grid,html:-webkit-full-screen #game .owned-properties-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+html:fullscreen #game .owned-property-title,html:-webkit-full-screen #game .owned-property-title{font-size:11px!important}
+html:fullscreen .room-chat,html:-webkit-full-screen .room-chat{max-height:calc(100dvh - 20px)}
+
+/* El control nuevo es para laptop. En móvil seguimos usando el flujo horizontal existente. */
+@media (hover:none) and (pointer:coarse){.fullscreen-game-control{display:none!important}}
