@@ -1033,3 +1033,19 @@ html:fullscreen .room-chat,html:-webkit-full-screen .room-chat{max-height:calc(1
   #game .tile.edge-left .title,
   #game .tile.edge-left .cost{right:11px}
 }
+
+
+/* v1.7.17.3 — columna derecha: franja a la izquierda y texto corrido */
+#game .tile.edge-right .stripe{right:auto;left:0}
+#game .tile.edge-right .title,
+#game .tile.edge-right .cost{
+  left:14px;
+  right:0;
+  text-align:center;
+  padding:0 4px 0 2px;
+}
+#game .tile.edge-right .owner-badge{left:auto;right:3px}
+@media(max-width:760px){
+  #game .tile.edge-right .title,
+  #game .tile.edge-right .cost{left:11px}
+}
