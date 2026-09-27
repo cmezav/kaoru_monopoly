@@ -147,3 +147,10 @@ Al pulsar Guardar en el Editor, el tablero y las cartillas se guardan en la cuen
 - La casa se muestra con exactamente la mitad de altura visual del hotel. Para 2–4 casas se muestra una casa animada con contador `×N`; el hotel se muestra como una sola torre animada.
 - Los edificios aparecen tanto sobre la casilla correspondiente del tablero como sobre la mini tarjeta de la propiedad.
 - La foto circular del propietario se conserva sobre la casilla incluso cuando hay casas/hotel.
+
+## Ajustes v1.7.13.1
+
+- Se sustituyeron las animaciones de **casa** y **hotel** por las nuevas versiones con **pantalla verde** que enviaste.
+- Ambos videos se recortaron y se exportaron a **WebP animado transparente** con **loop continuo** para seguir cargando rápido dentro del tablero y de la lista lateral.
+- Se mantuvo la proporción pedida: la **casa** sigue viéndose con aproximadamente **la mitad de altura** del **hotel**.
+- El hotel largo se recortó al tramo útil de animación (antes de que el video quedara vacío) para evitar peso innecesario.
