@@ -162,3 +162,11 @@ Al pulsar Guardar en el Editor, el tablero y las cartillas se guardan en la cuen
 - Las dos pistas nuevas fueron normalizadas a un nivel parecido al resto de la música y con picos alrededor de **-3 dB**, para evitar saltos bruscos de volumen.
 - Se eliminó el silencio inicial evidente de la pista 11 y el silencio final sobrante de la pista 12.
 - Cada sala nueva genera ahora un orden aleatorio de **12 canciones sin repetir** y, al terminar, repite ese mismo orden de la sala.
+
+## Ajustes v1.7.15 — móvil horizontal sin cambiar escritorio
+
+- La versión de escritorio/laptop conserva exactamente su layout; los cambios móviles están aislados a dispositivos táctiles con `pointer: coarse`.
+- En celular, la partida intenta activar **pantalla completa + orientación horizontal** cuando el navegador lo permite.
+- Si el navegador (especialmente iPhone Safari) no permite bloquear la orientación, aparece una pantalla clara para girar el teléfono; solo bloquea la partida, no login ni lobby.
+- En horizontal el tablero se redimensiona al alto real del teléfono, la columna derecha queda visible y desplazable, y chat/menú mantienen controles táctiles compactos.
+- Se añadió un `manifest.webmanifest` con orientación `landscape`, útil cuando el juego se instala como web app/PWA.

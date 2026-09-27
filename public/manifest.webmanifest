@@ -1,0 +1,9 @@
+{
+  "name": "Kaoru Monopoly Online",
+  "short_name": "Kaoru",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#f5f5fa",
+  "theme_color": "#f5f5fa"
+}
