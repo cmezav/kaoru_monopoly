@@ -990,3 +990,30 @@ html:fullscreen .room-chat,html:-webkit-full-screen .room-chat{max-height:calc(1
 
 /* El control nuevo es para laptop. En móvil seguimos usando el flujo horizontal existente. */
 @media (hover:none) and (pointer:coarse){.fullscreen-game-control{display:none!important}}
+
+
+/* v1.7.17.1 — ajuste real de franjas metálicas por lado del tablero */
+#game .tile.street-topfix,.tile.street-topfix{}
+#game .tile .stripe{z-index:2}
+#game .tile.edge-left .stripe,
+#game .tile.edge-right .stripe{position:absolute;top:0;bottom:0;width:12px;height:auto;border-radius:0;border-width:0 1px 0 1px}
+#game .tile.edge-left .stripe{left:0}
+#game .tile.edge-right .stripe{right:0}
+#game .tile.edge-top .stripe,
+#game .tile.edge-bottom .stripe{position:absolute;left:0;right:0;height:13px}
+#game .tile.edge-top .stripe{top:0}
+#game .tile.edge-bottom .stripe{top:0}
+#game .tile.edge-left .title,
+#game .tile.edge-left .cost{left:14px}
+#game .tile.edge-right .title,
+#game .tile.edge-right .cost{right:14px}
+#game .tile.edge-left .owner-badge{right:3px}
+#game .tile.edge-right .owner-badge{left:3px;right:auto}
+@media(max-width:760px){
+  #game .tile.edge-left .stripe,
+  #game .tile.edge-right .stripe{width:10px}
+  #game .tile.edge-left .title,
+  #game .tile.edge-left .cost{left:11px}
+  #game .tile.edge-right .title,
+  #game .tile.edge-right .cost{right:11px}
+}
