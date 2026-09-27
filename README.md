@@ -154,3 +154,11 @@ Al pulsar Guardar en el Editor, el tablero y las cartillas se guardan en la cuen
 - Ambos videos se recortaron y se exportaron a **WebP animado transparente** con **loop continuo** para seguir cargando rápido dentro del tablero y de la lista lateral.
 - Se mantuvo la proporción pedida: la **casa** sigue viéndose con aproximadamente **la mitad de altura** del **hotel**.
 - El hotel largo se recortó al tramo útil de animación (antes de que el video quedara vacío) para evitar peso innecesario.
+
+## Ajustes v1.7.14
+
+- La playlist de fondo pasa de **10 a 12 canciones**.
+- Se agregaron dos pistas nuevas como `track-11.mp3` y `track-12.mp3`; los títulos no se muestran en la interfaz.
+- Las dos pistas nuevas fueron normalizadas a un nivel parecido al resto de la música y con picos alrededor de **-3 dB**, para evitar saltos bruscos de volumen.
+- Se eliminó el silencio inicial evidente de la pista 11 y el silencio final sobrante de la pista 12.
+- Cada sala nueva genera ahora un orden aleatorio de **12 canciones sin repetir** y, al terminar, repite ese mismo orden de la sala.

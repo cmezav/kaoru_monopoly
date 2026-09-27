@@ -74,7 +74,9 @@ const MUSIC_TRACKS=[
   {src:'/music/track-07.mp3',duration:223.974},
   {src:'/music/track-08.mp3',duration:161.019},
   {src:'/music/track-09.mp3',duration:184.895},
-  {src:'/music/track-10.mp3',duration:228.493}
+  {src:'/music/track-10.mp3',duration:228.493},
+  {src:'/music/track-11.mp3',duration:142.800},
+  {src:'/music/track-12.mp3',duration:193.824}
 ];
 let effectsLevel=80,musicLevel=14,musicAudio=null,musicTrack=-1,musicRoom=null,musicClockOffset=0,musicGeneration=0,musicSyncTimer=null,musicLastSeekAt=0,sfxQueued=0;
 try{effectsLevel=Math.max(0,Math.min(100,Number(localStorage.getItem('kaoru-effects-volume'))||80));const savedMusic=Number(localStorage.getItem('kaoru-music-volume'));musicLevel=Number.isFinite(savedMusic)&&savedMusic>=0?Math.max(0,Math.min(100,savedMusic)):14}catch{}
