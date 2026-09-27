@@ -179,3 +179,11 @@ Al pulsar Guardar en el Editor, el tablero y las cartillas se guardan en la cuen
 - La vista normal de laptop no cambia; las reglas de tamaño extra solo se aplican mientras el navegador está realmente en pantalla completa.
 - En pantalla completa el tablero ocupa casi todo el alto físico disponible y las calles, precios e imágenes ganan tamaño para leerse mejor; el panel lateral conserva jugadores, detalles y propiedades con scroll propio.
 - El botón se oculta en dispositivos táctiles, que siguen usando el modo móvil horizontal de v1.7.15.
+
+## Ajustes v1.7.18 — restauración de efectos de audio
+
+- Se regeneraron desde los archivos originales los efectos de **estación**, **hipoteca** y **cárcel** para eliminar el sonido áspero/distorsionado introducido por la amplificación anterior.
+- Estación: menor ganancia, sin compresión/limitador agresivo.
+- Hipoteca: conserva estéreo; se amplificó de forma moderada sin llevar el pico cerca de 0 dBFS.
+- Cárcel: conserva estéreo y dinámica original; solo se recortó el silencio largo.
+- Se reajustaron sus volúmenes de reproducción para mantenerlos audibles sin saturar.
